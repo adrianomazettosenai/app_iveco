@@ -123,15 +123,61 @@ export const INITIAL_USER = {
 
 export const TRUCK_INSPECTION_MOCK = {
   model: 'IVECO S-WAY',
-  subModel: 'Hi-Way • 480cv',
-  category: 'Trator Pesado',
+  subModel: '540 cv • 6x2',
+  category: 'Caminhão Pesado',
   fuel: 'Diesel S10',
-  year: '2022',
+  year: '2023',
   licensePlate: 'IVC-2E24',
   chassis: '93ZSW480XNC098421',
   mileage: '142.800 km',
-  healthScore: 78,
+  healthScore: 84,
   scanDate: '28/08/2026 — 09:35',
+  damages: [
+    {
+      id: 'dam-1',
+      location: 'Para-choque Dianteiro Direito',
+      type: 'Impacto / Deformação',
+      severity: 'Média',
+      severityColor: '#eab308',
+      description: 'Amassado de 18cm no canto inferior direito com risco na pintura.',
+      recommendation: 'Alinhamento da carcaça e retoque estético de pintura.',
+      actionNeeded: 'Reparo de Funilaria',
+      icon: 'AlertTriangle'
+    },
+    {
+      id: 'dam-2',
+      location: 'Lente do Farol Auxiliar Esquerdo',
+      type: 'Trinca / Fissura',
+      severity: 'Leve',
+      severityColor: '#38bdf8',
+      description: 'Microfissura de 3cm na lente de policarbonato sem quebra total.',
+      recommendation: 'Selagem ou substituição da lente para evitar infiltração de umidade.',
+      actionNeeded: 'Recondicionamento',
+      icon: 'AlertCircle'
+    },
+    {
+      id: 'dam-3',
+      location: 'Estrutura da Cabine e Chassi',
+      type: 'Inspeção Estrutural',
+      severity: 'Sem Avarias',
+      severityColor: '#00e676',
+      description: 'Alinhamento longitudinal e pontos de ancoragem 100% íntegros.',
+      recommendation: 'Nenhuma intervenção necessária. Estrutura aprovada.',
+      actionNeeded: 'Aprovado',
+      icon: 'CheckCircle2'
+    },
+    {
+      id: 'dam-4',
+      location: 'Para-brisa Panorâmico',
+      type: 'Vidros e Ópticos',
+      severity: 'Sem Avarias',
+      severityColor: '#00e676',
+      description: 'Sem trincas ou lascas na área de varredura dos limpadores.',
+      recommendation: 'Vidro original laminado em conformidade com o padrão IVECO.',
+      actionNeeded: 'Aprovado',
+      icon: 'CheckCircle2'
+    }
+  ],
   components: [
     {
       id: 'motor',

@@ -60,23 +60,23 @@ export const ScannerHomeScreen = ({ onNavigate }) => {
         </p>
       </div>
 
-      {/* Two Big Interactive Cards matching visual reference */}
+      {/* Two Big Interactive Cards */}
       <div className="space-y-4 my-auto py-2">
-        {/* Option 1: Caminhões */}
+        {/* Option 1: Caminhões: Modelo & Avarias */}
         <button
           onClick={() => onNavigate('scanner_caminhao_live')}
           className="w-full p-4 rounded-2xl bg-gradient-to-b from-[#16202c] to-[#0f1720] border border-white/10 hover:border-[#00e676]/60 transition-all text-left group shadow-lg"
         >
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-base font-extrabold text-white group-hover:text-[#00e676] transition-colors">
-              Caminhões
+              Caminhões: Modelo & Avarias
             </h3>
             <span className="text-[10px] font-bold text-[#00e676] bg-[#00e676]/10 px-2 py-0.5 rounded-full border border-[#00e676]/30">
-              IA Ativa
+              Modelo + Avarias
             </span>
           </div>
           <p className="text-xs text-gray-400 mb-3">
-            Inspeção inteligente do caminhão e checagem de componentes.
+            Identificação inteligente de modelo, motorização e detecção de avarias por IA.
           </p>
 
           <div className="relative rounded-xl overflow-hidden bg-black/40 p-2 border border-white/5 flex items-center justify-center">
@@ -98,7 +98,7 @@ export const ScannerHomeScreen = ({ onNavigate }) => {
             </span>
           </div>
           <p className="text-xs text-gray-400 mb-3">
-            Diagnóstico inteligente de componentes, desgaste e destinação.
+            Diagnóstico inteligente de componentes, desgaste, estoque e destinação.
           </p>
 
           <div className="relative rounded-xl overflow-hidden bg-black/40 p-2 border border-white/5 flex items-center justify-center">
@@ -114,7 +114,7 @@ export const ScannerHomeScreen = ({ onNavigate }) => {
           className="inline-flex items-center gap-2 text-xs font-semibold text-[#00e676] hover:underline"
         >
           <QrCode className="w-4 h-4" />
-          <span>Acesso direto ao Leitor de QR Code</span>
+          <span>Acesso direto ao Leitor de QR Code de Peças</span>
         </button>
       </div>
     </div>
@@ -122,11 +122,10 @@ export const ScannerHomeScreen = ({ onNavigate }) => {
 };
 
 /**
- * 8. SCANNER DE CAMINHÕES (CÂMERA LIVE COM IA)
+ * 8. SCANNER DE CAMINHÕES (MODELO & AVARIAS LIVE COM IA)
  */
 export const ScannerTruckLiveScreen = ({ onNavigate }) => {
-  const [mode, setMode] = useState('foto'); // foto | auto
-  const [flash, setFlash] = useState(false);
+  const [filterMode, setFilterMode] = useState('todos'); // todos | modelo | avarias
 
   const handleCapture = (photoData) => {
     onNavigate('analise_caminhao_loading');
@@ -147,10 +146,10 @@ export const ScannerTruckLiveScreen = ({ onNavigate }) => {
 
             <div className="text-center">
               <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-                Scanner de Caminhões
+                Scanner: Modelo & Avarias
               </h3>
               <p className="text-[10px] text-[#00e676] font-mono animate-pulse">
-                ● CÂMERA AO VIVO ATIVA
+                ● DETECTANDO VEÍCULO & AVARIAS
               </p>
             </div>
 
@@ -163,7 +162,7 @@ export const ScannerTruckLiveScreen = ({ onNavigate }) => {
             </button>
           </div>
 
-          {/* Center Camera Viewfinder */}
+          {/* Center Camera Viewfinder with Dedicated Model & Damage Reticles */}
           <div className="relative my-auto flex items-center justify-center">
             {/* Viewfinder Target Brackets */}
             <div className="relative w-full max-w-[320px] aspect-[4/3] rounded-2xl border border-[#00e676]/40 p-3 flex items-center justify-center bg-transparent shadow-2xl">
@@ -173,29 +172,52 @@ export const ScannerTruckLiveScreen = ({ onNavigate }) => {
               <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-2 border-l-2 border-[#00e676]" />
               <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-2 border-r-2 border-[#00e676]" />
 
-              {/* AI Recognition Floating Tag */}
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-[#00e676]/60 text-[11px] font-mono text-[#00e676] flex items-center gap-1.5 whitespace-nowrap">
-                <Sparkles className="w-3 h-3 text-[#00e676]" />
-                <span>IVECO S-WAY 2022 • 98.4% Match</span>
+              {/* Dynamic Detection Floating Tags based on filterMode */}
+              <div className="absolute inset-x-2 bottom-3 flex flex-col gap-1.5 items-center">
+                {(filterMode === 'todos' || filterMode === 'modelo') && (
+                  <div className="px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-[#00e676]/60 text-[11px] font-mono text-[#00e676] flex items-center gap-1.5 whitespace-nowrap shadow-md">
+                    <Sparkles className="w-3 h-3 text-[#00e676]" />
+                    <span>IVECO S-WAY 540 cv (2023) • 99.4%</span>
+                  </div>
+                )}
+
+                {(filterMode === 'todos' || filterMode === 'avarias') && (
+                  <div className="px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-yellow-400/60 text-[10px] font-mono text-yellow-300 flex items-center gap-1.5 whitespace-nowrap shadow-md">
+                    <AlertTriangle className="w-3 h-3 text-yellow-400" />
+                    <span>Avaria Detectada: Para-choque Frontal</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
           {/* Bottom Controls */}
-          <div className="z-10 space-y-4">
-            {/* Mode Selector */}
-            <div className="flex items-center justify-center gap-4 text-xs font-semibold">
+          <div className="z-10 space-y-3">
+            {/* Filter Mode Selector: Modelo vs Avarias */}
+            <div className="flex items-center justify-center gap-2 p-1 rounded-xl bg-black/70 backdrop-blur-md border border-white/10 max-w-[280px] mx-auto text-[11px] font-semibold">
               <button
-                onClick={() => setMode('foto')}
-                className={`transition-colors ${mode === 'foto' ? 'text-[#00e676] font-bold underline decoration-2 underline-offset-4' : 'text-gray-400'}`}
+                onClick={() => setFilterMode('todos')}
+                className={`flex-1 py-1 rounded-lg transition-all ${
+                  filterMode === 'todos' ? 'bg-[#00e676] text-black font-bold' : 'text-gray-400 hover:text-white'
+                }`}
               >
-                Foto
+                Geral
               </button>
               <button
-                onClick={() => setMode('auto')}
-                className={`transition-colors ${mode === 'auto' ? 'text-[#00e676] font-bold underline decoration-2 underline-offset-4' : 'text-gray-400'}`}
+                onClick={() => setFilterMode('modelo')}
+                className={`flex-1 py-1 rounded-lg transition-all ${
+                  filterMode === 'modelo' ? 'bg-[#00e676] text-black font-bold' : 'text-gray-400 hover:text-white'
+                }`}
               >
-                Automático
+                Modelo
+              </button>
+              <button
+                onClick={() => setFilterMode('avarias')}
+                className={`flex-1 py-1 rounded-lg transition-all ${
+                  filterMode === 'avarias' ? 'bg-yellow-400 text-black font-bold' : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                Avarias
               </button>
             </div>
 
@@ -221,10 +243,11 @@ export const ScannerTruckLiveScreen = ({ onNavigate }) => {
               </button>
 
               <button
-                onClick={() => onNavigate('qr_code_scanner')}
-                className="p-3 rounded-full bg-black/60 text-[#00e676] hover:bg-white/20 transition-all border border-white/10"
+                onClick={toggleFacingMode}
+                className="p-3 rounded-full bg-black/60 text-white hover:bg-white/20 transition-all border border-white/10"
+                title="Alternar Câmera"
               >
-                <QrCode className="w-5 h-5" />
+                <RefreshCw className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -235,26 +258,26 @@ export const ScannerTruckLiveScreen = ({ onNavigate }) => {
 };
 
 /**
- * 9. ANÁLISE DO CAMINHÃO (LOADING NEURAL)
+ * 9. ANÁLISE DO CAMINHÃO (LOADING NEURAL: MODELO & AVARIAS)
  */
 export const TruckAnalysisLoadingScreen = ({ onNavigate }) => {
   const [progress, setProgress] = useState(15);
-  const [stepText, setStepText] = useState('Identificando modelo e motorização...');
+  const [stepText, setStepText] = useState('Identificando modelo, versão e motorização IVECO...');
 
   useEffect(() => {
     const timer1 = setTimeout(() => {
       setProgress(45);
-      setStepText('Escaneando componentes e sensores...');
+      setStepText('Mapeando superfície da cabine, para-choques e faróis...');
     }, 600);
 
     const timer2 = setTimeout(() => {
       setProgress(85);
-      setStepText('Verificando histórico de desgaste e compatibilidade...');
+      setStepText('Detectando avarias, trincas e deformações com IA...');
     }, 1300);
 
     const timer3 = setTimeout(() => {
       setProgress(100);
-      setStepText('Diagnóstico concluído!');
+      setStepText('Relatório de modelo e avarias concluído!');
       setTimeout(() => {
         onNavigate('resultado_caminhao');
       }, 500);
@@ -277,7 +300,7 @@ export const TruckAnalysisLoadingScreen = ({ onNavigate }) => {
         </div>
       </div>
 
-      <h2 className="text-lg font-bold text-white mb-1">Processamento por IA</h2>
+      <h2 className="text-lg font-bold text-white mb-1">Diagnóstico do Caminhão por IA</h2>
       <p className="text-xs text-[#00e676] font-mono mb-6">{stepText}</p>
 
       {/* Progress Bar */}
@@ -293,10 +316,10 @@ export const TruckAnalysisLoadingScreen = ({ onNavigate }) => {
 };
 
 /**
- * 10. RESULTADO DO CAMINHÃO
+ * 10. RESULTADO DO CAMINHÃO (MODELO & AVARIAS DETECTADAS)
  */
 export const TruckResultScreen = ({ onNavigate, onSelectComponent }) => {
-  const [tab, setTab] = useState('geral'); // geral | componentes
+  const [tab, setTab] = useState('avarias'); // avarias | modelo
   const [selectedPin, setSelectedPin] = useState('freios');
   const data = TRUCK_INSPECTION_MOCK;
 
@@ -315,53 +338,126 @@ export const TruckResultScreen = ({ onNavigate, onSelectComponent }) => {
             className="flex items-center gap-1 text-sm text-gray-300 hover:text-white"
           >
             <ChevronLeft className="w-5 h-5" />
-            <span className="font-semibold">Resultado do Caminhão</span>
+            <span className="font-semibold">Diagnóstico do Caminhão</span>
           </button>
         </div>
 
-        {/* Vehicle Header Card */}
+        {/* Vehicle Identified Header Card */}
         <div className="p-3.5 rounded-2xl bg-[#141b24] border border-white/10 mb-3 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-base font-extrabold text-white">{data.model}</h2>
               <span className="text-[10px] font-bold text-[#00e676] bg-[#00e676]/10 px-2 py-0.5 rounded-full border border-[#00e676]/30">
-                Score: {data.healthScore}%
+                Saúde: {data.healthScore}%
               </span>
             </div>
             <p className="text-xs text-gray-300 mt-0.5">{data.year} • {data.subModel}</p>
-            <p className="text-[11px] text-gray-400">{data.category} • {data.fuel}</p>
+            <p className="text-[11px] text-gray-400 font-mono">Placa: {data.licensePlate} • {data.mileage}</p>
           </div>
           <div className="w-16 h-12 rounded-lg bg-black/40 p-1 flex items-center justify-center border border-white/5">
             <IvecoTruckVisual className="scale-75" />
           </div>
         </div>
 
-        {/* Tabs: Visão Geral | Componentes */}
+        {/* Tabs: Avarias Detectadas (IA) | Modelo & Estrutura */}
         <div className="grid grid-cols-2 p-1 rounded-xl bg-[#141b24] border border-white/10 mb-3">
           <button
-            onClick={() => setTab('geral')}
-            className={`py-1.5 text-xs font-semibold rounded-lg transition-all ${
-              tab === 'geral' ? 'bg-[#00e676] text-black font-bold' : 'text-gray-400 hover:text-white'
+            onClick={() => setTab('avarias')}
+            className={`py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+              tab === 'avarias' ? 'bg-[#00e676] text-black font-bold' : 'text-gray-400 hover:text-white'
             }`}
           >
-            Visão geral
+            <AlertTriangle className="w-3.5 h-3.5" />
+            <span>Avarias ({data.damages?.length || 4})</span>
           </button>
           <button
-            onClick={() => setTab('componentes')}
-            className={`py-1.5 text-xs font-semibold rounded-lg transition-all ${
-              tab === 'componentes' ? 'bg-[#00e676] text-black font-bold' : 'text-gray-400 hover:text-white'
+            onClick={() => setTab('modelo')}
+            className={`py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+              tab === 'modelo' ? 'bg-[#00e676] text-black font-bold' : 'text-gray-400 hover:text-white'
             }`}
           >
-            Componentes
+            <Truck className="w-3.5 h-3.5" />
+            <span>Modelo & Estrutura</span>
           </button>
         </div>
 
-        {/* Tab 1: Visão Geral with Interactive Truck Diagram */}
-        {tab === 'geral' && (
+        {/* Tab 1: Avarias Detectadas com IA */}
+        {tab === 'avarias' && (
+          <div className="space-y-2.5">
+            <div className="p-3 rounded-xl bg-[#111720] border border-white/10 flex items-center justify-between">
+              <span className="text-xs font-bold text-gray-200">Relatório Visual de Danos</span>
+              <span className="text-[10px] font-bold text-yellow-400 bg-yellow-400/10 px-2 py-0.5 rounded-full border border-yellow-400/30">
+                2 Recomendações
+              </span>
+            </div>
+
+            {(data.damages || []).map((dam) => (
+              <div
+                key={dam.id}
+                className="p-3.5 rounded-xl bg-[#141b24] border border-white/10 space-y-2 hover:border-white/20 transition-all"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="w-2.5 h-2.5 rounded-full"
+                      style={{ backgroundColor: dam.severityColor }}
+                    />
+                    <h4 className="text-xs font-bold text-white">{dam.location}</h4>
+                  </div>
+                  <span
+                    className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                    style={{
+                      backgroundColor: `${dam.severityColor}20`,
+                      color: dam.severityColor,
+                      border: `1px solid ${dam.severityColor}50`
+                    }}
+                  >
+                    {dam.severity}
+                  </span>
+                </div>
+
+                <p className="text-xs text-gray-300">{dam.description}</p>
+
+                <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[11px]">
+                  <span className="text-gray-400">Ação: <b className="text-gray-200">{dam.actionNeeded}</b></span>
+                  <span className="text-[#00e676] font-semibold">{dam.recommendation}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Tab 2: Modelo & Estrutura Geral */}
+        {tab === 'modelo' && (
           <div className="space-y-3">
+            <div className="p-3.5 rounded-2xl bg-[#141b24] border border-white/10 space-y-2.5 text-xs">
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider text-gray-400">
+                Ficha Técnica do Veículo
+              </h3>
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <div>
+                  <span className="text-gray-400 block text-[10px] uppercase">Motorização</span>
+                  <span className="font-bold text-white">Cursor 13 (540 cv)</span>
+                </div>
+                <div>
+                  <span className="text-gray-400 block text-[10px] uppercase">Transmissão</span>
+                  <span className="font-bold text-white">Hi-Tronix 12V</span>
+                </div>
+                <div>
+                  <span className="text-gray-400 block text-[10px] uppercase">Tração</span>
+                  <span className="font-bold text-white">6x2 Rodoviário</span>
+                </div>
+                <div>
+                  <span className="text-gray-400 block text-[10px] uppercase">Chassi</span>
+                  <span className="font-bold text-white font-mono">{data.chassis}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Interactive Truck Diagram */}
             <div className="p-2 rounded-2xl bg-[#111720] border border-white/10 relative overflow-hidden">
               <span className="text-[10px] font-mono text-gray-400 block text-center mb-1">
-                Toque nos pontos para inspecionar componentes
+                Mapa estrutural do caminhão
               </span>
               <IvecoTruckVisual
                 showPins={true}
@@ -374,81 +470,16 @@ export const TruckResultScreen = ({ onNavigate, onSelectComponent }) => {
                 className="h-44"
               />
             </div>
-
-            {/* Components Summary List matching visual reference */}
-            <div className="space-y-1.5">
-              {data.components.map((comp) => (
-                <div
-                  key={comp.id}
-                  onClick={() => handleComponentClick(comp)}
-                  className="p-2.5 rounded-xl bg-[#141b24] border border-white/5 hover:border-white/20 flex items-center justify-between cursor-pointer transition-all"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <span
-                      className="w-2.5 h-2.5 rounded-full"
-                      style={{ backgroundColor: comp.color }}
-                    />
-                    <span className="text-xs font-semibold text-white">{comp.name.split(' ')[0]}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span
-                      className="text-xs font-semibold"
-                      style={{ color: comp.color }}
-                    >
-                      {comp.statusLabel}
-                    </span>
-                    <ChevronLeft className="w-3.5 h-3.5 text-gray-500 rotate-180" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Tab 2: Detailed Components List */}
-        {tab === 'componentes' && (
-          <div className="space-y-2">
-            {data.components.map((comp) => (
-              <div
-                key={comp.id}
-                onClick={() => handleComponentClick(comp)}
-                className="p-3.5 rounded-xl bg-[#141b24] border border-white/10 hover:border-[#00e676]/40 cursor-pointer transition-all space-y-2"
-              >
-                <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold text-white">{comp.name}</h4>
-                  <span
-                    className="text-[11px] font-bold px-2 py-0.5 rounded-full"
-                    style={{
-                      backgroundColor: `${comp.color}20`,
-                      color: comp.color,
-                      border: `1px solid ${comp.color}50`
-                    }}
-                  >
-                    {comp.statusLabel}
-                  </span>
-                </div>
-                <p className="text-xs text-gray-300 line-clamp-1">{comp.recommendation}</p>
-                <div className="flex items-center justify-between text-[11px] text-gray-400 pt-1 border-t border-white/5">
-                  <span>Desgaste: {comp.wearPercentage}%</span>
-                  <span className="text-[#00e676] font-semibold flex items-center gap-1">
-                    Ver detalhes <ChevronLeft className="w-3 h-3 rotate-180" />
-                  </span>
-                </div>
-              </div>
-            ))}
           </div>
         )}
       </div>
 
       {/* Bottom Button */}
       <button
-        onClick={() => {
-          const comp = data.components.find(c => c.status === 'warning') || data.components[2];
-          handleComponentClick(comp);
-        }}
+        onClick={() => onNavigate('scanner_home')}
         className="w-full py-3.5 mt-3 rounded-xl bg-[#00e676] text-black font-bold text-sm tracking-wide shadow-md shadow-[#00e676]/20 hover:brightness-110 active:scale-[0.98] transition-all"
       >
-        Ver detalhes completos
+        Concluir Inspeção do Caminhão
       </button>
     </div>
   );
