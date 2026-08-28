@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { BottomNavBar } from './components/BottomNavBar';
+import { DesktopSidebar } from './components/DesktopSidebar';
+import { DesktopHeader } from './components/DesktopHeader';
 
 // Auth Screens
 import { 
@@ -363,20 +365,61 @@ export default function App() {
     }
   };
 
+  const isAuthScreen = ['splash', 'login', 'cadastro_1', 'cadastro_2', 'cadastro_3'].includes(currentScreen);
   const showBottomNav = !['splash', 'login', 'cadastro_1', 'cadastro_2', 'cadastro_3', 'analise_caminhao_loading', 'analise_peca_loading'].includes(currentScreen);
 
-  return (
-    <div className="w-full min-h-[100dvh] h-[100dvh] bg-[#070a0e] flex justify-center overflow-hidden">
-      <div className="w-full max-w-lg h-full bg-[#0a0e14] flex flex-col relative overflow-hidden shadow-2xl">
-        <main className="flex-1 w-full relative overflow-hidden flex flex-col">
+  // Layout para Telas de Autenticação (Centralizado no Desktop / Tela cheia no Mobile)
+  if (isAuthScreen) {
+    return (
+      <div className="w-full min-h-[100dvh] h-[100dvh] bg-[#070a0e] flex items-center justify-center overflow-hidden">
+        <div className="w-full max-w-md h-full sm:h-auto sm:max-h-[90vh] sm:rounded-3xl bg-[#0a0e14] flex flex-col relative overflow-hidden sm:border sm:border-white/10 shadow-2xl">
           {renderScreen()}
+        </div>
+      </div>
+    );
+  }
+
+  // Layout Responsivo Unificado (Mobile + Desktop)
+  return (
+    <div className="w-full min-h-[100dvh] h-[100dvh] bg-[#070a0e] flex overflow-hidden">
+      {/* 🖥️ Barra Lateral Fixa para Desktop (lg+) */}
+      <div className="hidden lg:flex h-full">
+        <DesktopSidebar 
+          currentScreen={currentScreen} 
+          onNavigate={setCurrentScreen} 
+          user={user} 
+          selectedUnit={selectedUnit} 
+          setSelectedUnit={setSelectedUnit} 
+        />
+      </div>
+
+      {/* 📱 / 🖥️ Área Principal do Aplicativo */}
+      <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#0a0e14]">
+        {/* Topo no Desktop (lg+) */}
+        <div className="hidden lg:block">
+          <DesktopHeader 
+            currentScreen={currentScreen} 
+            onNavigate={setCurrentScreen} 
+            user={user} 
+            selectedUnit={selectedUnit} 
+          />
+        </div>
+
+        {/* Conteúdo da Tela */}
+        <main className="flex-1 w-full relative overflow-y-auto flex flex-col">
+          <div className="w-full h-full max-w-lg lg:max-w-4xl xl:max-w-5xl mx-auto flex flex-col">
+            {renderScreen()}
+          </div>
         </main>
 
+        {/* 📱 Barra de Navegação Inferior Apenas no Mobile (< lg) */}
         {showBottomNav && (
-          <BottomNavBar 
-            activeTab={getActiveTab()} 
-            onSelectTab={handleTabSelect} 
-          />
+          <div className="lg:hidden">
+            <BottomNavBar 
+              activeTab={getActiveTab()} 
+              onSelectTab={handleTabSelect} 
+            />
+          </div>
         )}
       </div>
     </div>
