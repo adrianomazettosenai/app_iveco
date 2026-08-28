@@ -129,39 +129,55 @@ export async function getParts(unitId = 'sp') {
 
     if (error || !data || data.length === 0) return PARTS_CATALOG;
 
-    return data.map(p => ({
-      id: p.id,
-      code: p.code,
-      name: p.name,
-      category: p.category,
-      manufacturer: p.manufacturer,
-      productionPlace: p.production_place,
-      manufacturingDate: p.manufacturing_date,
-      compatibility: p.compatibility,
-      year: p.year,
-      condition: p.condition,
-      wearPercentage: p.wear_percentage,
-      healthPercent: p.health_percent,
-      status: p.status,
-      statusLabel: p.status_label,
-      quantity: p.quantity,
-      unit: p.unit_id === 'sp' ? 'IVECO São Paulo' : p.unit_id,
-      unitId: p.unit_id,
-      location: p.location,
-      availableForExchange: p.available_for_exchange,
-      priceEstimate: p.price_estimate,
-      co2SavingsKg: Number(p.co2_savings_kg || 0),
-      corrosion: p.corrosion,
-      deformation: p.deformation,
-      cracks: p.cracks,
-      overallState: p.overall_state,
-      recommendation: p.recommendation,
-      materialType: p.material_type,
-      totalWeightKg: p.total_weight_kg,
-      disposalReason: p.disposal_reason,
-      qrCode: p.qr_code,
-      imageUrl: p.image_url
-    }));
+    return data.map(p => {
+      let images = [];
+      if (p.image_url) {
+        try {
+          if (p.image_url.startsWith('[') || p.image_url.startsWith('{')) {
+            images = JSON.parse(p.image_url);
+          } else {
+            images = [p.image_url];
+          }
+        } catch {
+          images = [p.image_url];
+        }
+      }
+
+      return {
+        id: p.id,
+        code: p.code,
+        name: p.name,
+        category: p.category,
+        manufacturer: p.manufacturer,
+        productionPlace: p.production_place,
+        manufacturingDate: p.manufacturing_date,
+        compatibility: p.compatibility,
+        year: p.year,
+        condition: p.condition,
+        wearPercentage: p.wear_percentage,
+        healthPercent: p.health_percent,
+        status: p.status,
+        statusLabel: p.status_label,
+        quantity: p.quantity,
+        unit: p.unit_id === 'sp' ? 'IVECO São Paulo' : p.unit_id,
+        unitId: p.unit_id,
+        location: p.location,
+        availableForExchange: p.available_for_exchange,
+        priceEstimate: p.price_estimate,
+        co2SavingsKg: Number(p.co2_savings_kg || 0),
+        corrosion: p.corrosion,
+        deformation: p.deformation,
+        cracks: p.cracks,
+        overallState: p.overall_state,
+        recommendation: p.recommendation,
+        materialType: p.material_type,
+        totalWeightKg: p.total_weight_kg,
+        disposalReason: p.disposal_reason,
+        qrCode: p.qr_code,
+        imageUrl: images[0] || null,
+        images: images
+      };
+    });
   } catch (err) {
     console.warn('Erro ao consultar parts no Supabase:', err);
     return PARTS_CATALOG;
@@ -171,10 +187,17 @@ export async function getParts(unitId = 'sp') {
 export async function addPart(partData) {
   if (!isSupabaseConfigured || !supabase) return { ...partData, id: `part-${Date.now()}` };
   try {
+    let formattedImageUrl = null;
+    if (partData.images && Array.isArray(partData.images) && partData.images.length > 0) {
+      formattedImageUrl = JSON.stringify(partData.images.slice(0, 3));
+    } else if (partData.imageUrl) {
+      formattedImageUrl = partData.imageUrl;
+    }
+
     const dbPayload = {
       code: partData.code,
       name: partData.name,
-      category: partData.category,
+      category: partData.category || 'Geral',
       manufacturer: partData.manufacturer || 'IVECO Genuine Parts',
       production_place: partData.productionPlace || 'Sete Lagoas - MG, Brasil',
       manufacturing_date: partData.manufacturingDate || new Date().toLocaleDateString('pt-BR'),
@@ -189,13 +212,14 @@ export async function addPart(partData) {
       unit_id: partData.unitId || 'sp',
       location: partData.location || 'Almoxarifado Geral',
       available_for_exchange: partData.availableForExchange !== false,
-      price_estimate: partData.priceEstimate,
+      price_estimate: partData.priceEstimate || 'R$ 2.500,00',
       co2_savings_kg: partData.co2SavingsKg || 25,
       corrosion: partData.corrosion || 'Inexistente',
       deformation: partData.deformation || 'Inexistente',
       cracks: partData.cracks || 'Inexistente',
       overall_state: partData.overallState || 'Peça em perfeito estado de funcionamento.',
-      recommendation: partData.recommendation || 'reutilizar'
+      recommendation: partData.recommendation || 'reutilizar',
+      image_url: formattedImageUrl
     };
 
     const { data, error } = await supabase

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   ChevronLeft, 
   Search, 
@@ -17,7 +17,12 @@ import {
   Building2,
   Box,
   SlidersHorizontal,
-  FileCheck
+  FileCheck,
+  Camera,
+  Image as ImageIcon,
+  Trash2,
+  UploadCloud,
+  Sparkles
 } from 'lucide-react';
 import { 
   PARTS_CATALOG, 
@@ -30,7 +35,10 @@ import {
   getExchangeRequests, 
   createExchangeRequest 
 } from '../services/supabaseService';
-import { useEffect } from 'react';
+import { 
+  uploadPartImagesToStorage, 
+  compressImageToWebP 
+} from '../services/storageService';
 import { 
   AlternatorVisual, 
   BrakeDiscVisual, 
@@ -278,6 +286,13 @@ export const NetworkStockSearchScreen = ({ onNavigate }) => {
  */
 export const StockPartDetailScreen = ({ onNavigate, part }) => {
   const currentPart = part || PARTS_CATALOG[0];
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
+
+  const imagesList = currentPart.images && currentPart.images.length > 0 
+    ? currentPart.images 
+    : (currentPart.imageUrl ? [currentPart.imageUrl] : []);
+
+  const angleLabels = ['Ângulo 1: Frontal', 'Ângulo 2: Lateral', 'Ângulo 3: Etiqueta'];
 
   return (
     <div className="h-full flex flex-col justify-between bg-[#0a0e14] px-5 py-4 overflow-y-auto pb-6">
@@ -293,14 +308,58 @@ export const StockPartDetailScreen = ({ onNavigate, part }) => {
           </button>
         </div>
 
-        {/* 3D Visual Casing */}
-        <div className="p-4 rounded-2xl bg-[#111720] border border-white/10 mb-3 flex items-center justify-center">
-          {currentPart.category.includes('Frenagem') ? (
-            <BrakeDiscVisual className="h-36" />
-          ) : currentPart.category.includes('Turbo') ? (
-            <TurboCompressorVisual className="h-36" />
+        {/* 3D Visual Casing or Real WebP Photos Gallery */}
+        <div className="p-3 rounded-2xl bg-[#111720] border border-white/10 mb-3 flex flex-col items-center justify-center relative overflow-hidden">
+          {imagesList.length > 0 ? (
+            <div className="w-full flex flex-col items-center">
+              {/* Active Large WebP Image */}
+              <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-black/60 border border-white/10 flex items-center justify-center shadow-inner">
+                <img
+                  src={imagesList[selectedPhotoIndex] || imagesList[0]}
+                  alt={`${currentPart.name} - ${angleLabels[selectedPhotoIndex]}`}
+                  className="w-full h-full object-cover rounded-xl"
+                />
+                <div className="absolute top-2 left-2 px-2.5 py-1 rounded-full bg-black/80 backdrop-blur-md border border-[#00e676]/40 text-[10px] font-bold text-[#00e676] flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-[#00e676]" />
+                  <span>{angleLabels[selectedPhotoIndex] || `Foto ${selectedPhotoIndex + 1}`}</span>
+                </div>
+                <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 text-[9px] font-mono text-gray-300">
+                  WEBP COMPRIMIDO
+                </div>
+              </div>
+
+              {/* Thumbnails Row for Angles */}
+              {imagesList.length > 1 && (
+                <div className="flex items-center gap-2 mt-2.5 w-full justify-center">
+                  {imagesList.map((imgUrl, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setSelectedPhotoIndex(idx)}
+                      className={`relative w-14 h-14 rounded-lg overflow-hidden border-2 transition-all ${
+                        selectedPhotoIndex === idx
+                          ? 'border-[#00e676] ring-2 ring-[#00e676]/30 scale-105'
+                          : 'border-white/10 opacity-60 hover:opacity-100'
+                      }`}
+                    >
+                      <img src={imgUrl} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                      <span className="absolute bottom-0 inset-x-0 bg-black/80 text-[8px] text-center font-bold text-gray-200">
+                        {idx + 1}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           ) : (
-            <AlternatorVisual className="h-36" />
+            <>
+              {currentPart.category.includes('Frenagem') ? (
+                <BrakeDiscVisual className="h-36" />
+              ) : currentPart.category.includes('Turbo') ? (
+                <TurboCompressorVisual className="h-36" />
+              ) : (
+                <AlternatorVisual className="h-36" />
+              )}
+            </>
           )}
         </div>
 
@@ -314,7 +373,7 @@ export const StockPartDetailScreen = ({ onNavigate, part }) => {
           <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/5 text-xs">
             <div>
               <span className="text-gray-400 block text-[10px] uppercase">Status</span>
-              <span className="font-bold text-[#00e676]">{currentPart.statusLabel}</span>
+              <span className="font-bold text-[#00e676]">{currentPart.statusLabel || 'Disponível'}</span>
             </div>
             <div>
               <span className="text-gray-400 block text-[10px] uppercase">Quantidade</span>
@@ -342,7 +401,7 @@ export const StockPartDetailScreen = ({ onNavigate, part }) => {
         </div>
       </div>
 
-      {/* Action Buttons matching prompt */}
+      {/* Action Buttons */}
       <div className="space-y-2">
         <button
           onClick={() => {
@@ -373,34 +432,103 @@ export const StockPartDetailScreen = ({ onNavigate, part }) => {
 };
 
 /**
- * 21 & 12. CADASTRAR PEÇA NO ESTOQUE
+ * 21 & 12. CADASTRAR PEÇA NO ESTOQUE (COM ATÉ 3 FOTOS WEBP NO STORAGE)
  */
 export const AddStockPartScreen = ({ onNavigate }) => {
   const [partCode, setPartCode] = useState('504385987');
+  const [partName, setPartName] = useState('Alternador 28V 100A');
+  const [quantity, setQuantity] = useState('1');
+  const [location, setLocation] = useState('Almoxarifado B — Prateleira 04 — Gaveta 12');
+  const [category, setCategory] = useState('Elétrico');
+  const [wearCondition, setWearCondition] = useState('80% — Bom');
   const [submitting, setSubmitting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState('');
+
+  // 3 Slots de Imagens (Frontal, Lateral, Etiqueta)
+  const [images, setImages] = useState([null, null, null]);
+  const fileInputsRef = [useRef(null), useRef(null), useRef(null)];
+
+  const slotLabels = [
+    { title: 'Ângulo 1: Frontal', desc: 'Visão geral da carcaça' },
+    { title: 'Ângulo 2: Lateral', desc: 'Conectores e eixos' },
+    { title: 'Ângulo 3: Etiqueta', desc: 'Gravação / Código OEM' }
+  ];
+
+  // Capturar e comprimir imagem para WebP imediatamente
+  const handleImageSelect = async (slotIndex, e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setStatusMessage('Comprimindo foto em WebP...');
+      const { dataUrl, blob, sizeKb } = await compressImageToWebP(file, 1200, 1200, 0.82);
+
+      setImages(prev => {
+        const next = [...prev];
+        next[slotIndex] = {
+          previewUrl: dataUrl,
+          blob,
+          sizeKb,
+          fileName: file.name
+        };
+        return next;
+      });
+      setStatusMessage('');
+    } catch (err) {
+      console.error('Erro na compressão:', err);
+      alert('Não foi possível processar esta imagem.');
+      setStatusMessage('');
+    }
+  };
+
+  const handleRemoveImage = (slotIndex) => {
+    setImages(prev => {
+      const next = [...prev];
+      next[slotIndex] = null;
+      return next;
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     try {
+      // 1. Filtrar imagens válidas
+      const validBlobs = images.filter(img => img !== null).map(img => img.blob || img.previewUrl);
+
+      // 2. Upload para o Supabase Storage (bucket 'imagens')
+      let uploadedUrls = [];
+      if (validBlobs.length > 0) {
+        setStatusMessage('Fazendo upload WebP para o Supabase Storage...');
+        uploadedUrls = await uploadPartImagesToStorage(validBlobs, partCode);
+      }
+
+      // 3. Salvar registro na tabela 'parts'
+      setStatusMessage('Gravando dados da peça no Supabase...');
       await addPart({
         code: partCode,
         name: partName,
         quantity: parseInt(quantity, 10) || 1,
         location,
-        category: 'Geral',
+        category,
         status: 'available',
         statusLabel: 'Disponível',
-        condition: 'Reutilizável',
-        unitId: 'sp'
+        condition: wearCondition.includes('Excelente') ? 'Reutilizável' : 'Recuperável',
+        wearPercentage: wearCondition.includes('95%') ? 5 : (wearCondition.includes('80%') ? 20 : 40),
+        healthPercent: wearCondition.includes('95%') ? 95 : (wearCondition.includes('80%') ? 80 : 60),
+        unitId: 'sp',
+        images: uploadedUrls,
+        imageUrl: uploadedUrls[0] || null
       });
-      alert('Peça cadastrada com sucesso no banco de dados do Supabase!');
+
+      alert('✅ Peça e fotos WebP cadastradas com sucesso no Supabase (bucket imagens)!');
       onNavigate('estoque_local');
     } catch (err) {
       console.error(err);
       alert('Erro ao salvar no banco. Verifique sua conexão.');
     } finally {
       setSubmitting(false);
+      setStatusMessage('');
     }
   };
 
@@ -414,7 +542,7 @@ export const AddStockPartScreen = ({ onNavigate }) => {
             className="flex items-center gap-1 text-sm text-gray-300 hover:text-white"
           >
             <ChevronLeft className="w-5 h-5" />
-            <span className="font-semibold">+ Adicionar Peça</span>
+            <span className="font-semibold">+ Cadastrar Nova Peça</span>
           </button>
         </div>
 
@@ -422,16 +550,99 @@ export const AddStockPartScreen = ({ onNavigate }) => {
         <button
           type="button"
           onClick={() => onNavigate('qr_code_scanner')}
-          className="w-full p-3 rounded-xl bg-[#141b24] border border-[#00e676]/30 text-[#00e676] hover:border-[#00e676] text-xs font-semibold flex items-center justify-center gap-2 mb-3"
+          className="w-full p-3 rounded-xl bg-[#141b24] border border-[#00e676]/30 text-[#00e676] hover:border-[#00e676] text-xs font-semibold flex items-center justify-center gap-2 mb-3 shadow-sm"
         >
           <QrCode className="w-4 h-4" />
-          <span>Escanear QR Code para preenchimento automático</span>
+          <span>Escanear QR Code / Código OEM da Peça</span>
         </button>
 
-        {/* Form */}
+        {/* 3-Slot Photo Uploader (Max 3 Imagens WebP) */}
+        <div className="mb-4 p-3.5 rounded-2xl bg-[#111720] border border-white/10">
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <h3 className="text-xs font-bold text-white flex items-center gap-1.5">
+                <Camera className="w-3.5 h-3.5 text-[#00e676]" />
+                <span>Fotos da Peça (Máx. 3 Ângulos)</span>
+              </h3>
+              <p className="text-[10px] text-gray-400">
+                Compressão automática em WebP para economizar espaço
+              </p>
+            </div>
+            <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#00e676]/15 text-[#00e676] border border-[#00e676]/30">
+              WebP Auto
+            </span>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2 mt-2">
+            {[0, 1, 2].map((idx) => {
+              const currentImg = images[idx];
+              const slotInfo = slotLabels[idx];
+
+              return (
+                <div key={idx} className="flex flex-col items-center">
+                  <input
+                    type="file"
+                    ref={fileInputsRef[idx]}
+                    accept="image/*"
+                    capture="environment"
+                    onChange={(e) => handleImageSelect(idx, e)}
+                    className="hidden"
+                  />
+
+                  {currentImg ? (
+                    <div className="relative w-full aspect-square rounded-xl overflow-hidden border border-[#00e676] bg-black/50 group shadow-md">
+                      <img
+                        src={currentImg.previewUrl}
+                        alt={`Ângulo ${idx + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveImage(idx)}
+                        className="absolute top-1 right-1 p-1 rounded-full bg-black/80 text-red-400 hover:bg-red-500 hover:text-white transition-colors"
+                        title="Remover foto"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                      <div className="absolute bottom-0 inset-x-0 bg-black/80 px-1 py-0.5 text-[8px] font-mono text-[#00e676] text-center">
+                        {currentImg.sizeKb} KB • WebP
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => fileInputsRef[idx].current?.click()}
+                      className="w-full aspect-square rounded-xl border border-dashed border-white/20 hover:border-[#00e676] bg-[#141b24] flex flex-col items-center justify-center p-2 text-center transition-all group active:scale-95"
+                    >
+                      <div className="w-7 h-7 rounded-lg bg-white/5 group-hover:bg-[#00e676]/20 text-gray-400 group-hover:text-[#00e676] flex items-center justify-center mb-1 transition-colors">
+                        <Plus className="w-4 h-4" />
+                      </div>
+                      <span className="text-[10px] font-bold text-gray-300 group-hover:text-white line-clamp-1">
+                        {slotInfo.title.split(':')[0]}
+                      </span>
+                      <span className="text-[8px] text-gray-500 line-clamp-1">
+                        {slotInfo.title.split(':')[1]}
+                      </span>
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Status Message */}
+        {statusMessage && (
+          <div className="mb-3 p-2.5 rounded-xl bg-[#00e676]/10 border border-[#00e676]/30 text-xs font-mono text-[#00e676] flex items-center gap-2 animate-pulse">
+            <UploadCloud className="w-4 h-4 shrink-0" />
+            <span>{statusMessage}</span>
+          </div>
+        )}
+
+        {/* Form Fields */}
         <form id="add-part-form" onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <label className="text-[11px] font-medium text-gray-300 block mb-1">Código da Peça</label>
+            <label className="text-[11px] font-medium text-gray-300 block mb-1">Código OEM da Peça</label>
             <input
               type="text"
               value={partCode}
@@ -454,28 +665,49 @@ export const AddStockPartScreen = ({ onNavigate }) => {
 
           <div className="grid grid-cols-2 gap-2">
             <div>
+              <label className="text-[11px] font-medium text-gray-300 block mb-1">Categoria</label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl bg-[#141b24] border border-white/10 text-white text-xs focus:outline-none"
+              >
+                <option value="Elétrico">Elétrico</option>
+                <option value="Frenagem">Frenagem</option>
+                <option value="Pneumático">Pneumático</option>
+                <option value="Motor / Turbo">Motor / Turbo</option>
+                <option value="Suspensão">Suspensão</option>
+                <option value="Geral">Geral</option>
+              </select>
+            </div>
+            <div>
               <label className="text-[11px] font-medium text-gray-300 block mb-1">Quantidade</label>
               <input
                 type="number"
+                min="1"
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl bg-[#141b24] border border-white/10 text-white text-xs focus:outline-none focus:border-[#00e676]"
                 required
               />
             </div>
-            <div>
-              <label className="text-[11px] font-medium text-gray-300 block mb-1">Estado de Uso</label>
-              <select className="w-full px-3 py-2 rounded-xl bg-[#141b24] border border-white/10 text-white text-xs focus:outline-none">
-                <option>80% — Bom</option>
-                <option>95% — Excelente</option>
-                <option>60% — Recuperável</option>
-              </select>
-            </div>
+          </div>
+
+          <div>
+            <label className="text-[11px] font-medium text-gray-300 block mb-1">Estado de Conservação</label>
+            <select
+              value={wearCondition}
+              onChange={(e) => setWearCondition(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl bg-[#141b24] border border-white/10 text-white text-xs focus:outline-none"
+            >
+              <option>95% — Excelente (Pronto p/ Uso)</option>
+              <option>80% — Bom (Leve Desgaste)</option>
+              <option>60% — Recuperável (Recondicionar)</option>
+            </select>
           </div>
 
           <div>
             <label className="text-[11px] font-medium text-gray-300 block mb-1">
-              Localização Física na Unidade
+              Localização Física no Almoxarifado
             </label>
             <input
               type="text"
@@ -492,9 +724,21 @@ export const AddStockPartScreen = ({ onNavigate }) => {
       <button
         type="submit"
         form="add-part-form"
-        className="w-full py-3.5 mt-4 rounded-xl bg-[#00e676] text-black font-bold text-sm tracking-wide shadow-md shadow-[#00e676]/20 hover:brightness-110 active:scale-[0.98] transition-all"
+        disabled={submitting}
+        className={`w-full py-3.5 mt-4 rounded-xl font-bold text-sm tracking-wide shadow-md transition-all flex items-center justify-center gap-2 ${
+          submitting
+            ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+            : 'bg-[#00e676] text-black shadow-[#00e676]/20 hover:brightness-110 active:scale-[0.98]'
+        }`}
       >
-        Confirmar Cadastro no Estoque
+        {submitting ? (
+          <>
+            <RefreshCw className="w-4 h-4 animate-spin" />
+            <span>Processando Cadastro...</span>
+          </>
+        ) : (
+          <span>Confirmar Cadastro no Estoque</span>
+        )}
       </button>
     </div>
   );
