@@ -1,0 +1,696 @@
+PROMPT MASTER — ECOFICINA IVECO 2.0
+Crie uma versão aprimorada, profissional e de alta fidelidade do
+aplicativo mobile ECOFICINA IVECO, utilizando a imagem de referência fornecida
+como base visual.
+O aplicativo deve funcionar como uma plataforma inteligente de inspeção de
+caminhões, análise de peças, gestão de estoque, troca de componentes entre
+unidades IVECO, reaproveitamento e descarte sustentável de resíduos.
+O conceito central é:
+“Transformar descarte em desempenho.”
+A plataforma conecta técnicos + unidades IVECO + estoque de peças +
+diagnóstico por IA + empresas de reciclagem/descarte sustentável em um
+único ecossistema.
+
+1. IDENTIDADE VISUAL
+Manter a identidade visual da referência.
+Estilo
+ Dark mode premium.
+ Fundo preto/grafite.
+ Verde IVECO como cor principal.
+ Branco e cinza para textos.
+ Cards escuros com bordas discretamente arredondadas.
+ Interface tecnológica e industrial.
+ Visual profissional, semelhante a um software utilizado em oficinas e
+centros de manutenção.
+ Imagens realistas de caminhões e componentes mecânicos.
+ Elementos de inteligência artificial.
+ Gráficos e indicadores de diagnóstico.
+ Microanimações discretas.
+ Feedback visual e háptico.
+ Ícones minimalistas.
+
+Cores de status
+믇 Verde — Normal / Disponível / Aprovado
+믆 Amarelo — Atenção / Manutenção
+믅 Laranja — Alto desgaste
+꼝 Vermelho — Crítico / Substituição
+꼞 Azul — Informação / Em transporte
+
+2. ESTRUTURA PRINCIPAL DO APP
+A navegação inferior deve ser reorganizada para comportar as novas
+funcionalidades:
+Início | Scanner | Estoque | Descarte | Perfil
+O Scanner permanece como uma das funções centrais.
+O usuário deve conseguir acessar rapidamente:
+ Dashboard.
+ Scanner.
+ Estoque de peças.
+ Troca de peças.
+ Descarte sustentável.
+ Agenda de coleta.
+ Histórico.
+ Perfil.
+ Unidade IVECO.
+
+3. CADASTRO DO USUÁRIO
+O cadastro deve ser obrigatório antes de acessar as funcionalidades internas.
+Além dos dados tradicionais, incluir obrigatoriamente:
+Dados pessoais
+ Nome completo.
+ E-mail corporativo.
+
+ Telefone.
+ Cargo/função.
+ Matrícula ou identificação profissional.
+ Senha.
+Unidade IVECO
+Criar um campo obrigatório:
+“Selecione sua unidade IVECO”
+O usuário não poderá concluir o cadastro sem selecionar uma unidade.
+Utilizar um campo de busca:
+꺐꺑꺏 Pesquisar unidade IVECO
+Exemplo:
+IVECO São Paulo — SP
+IVECO Curitiba — PR
+IVECO Belo Horizonte — MG
+IVECO Porto Alegre — RS
+Após selecionar:
+Unidade vinculada
+IVECO São Paulo
+굗굙굘 São Paulo — SP
+O usuário ficará permanentemente associado àquela unidade, podendo alterar
+essa informação somente através das configurações ou mediante
+autorização administrativa.
+
+4. PERFIL DO USUÁRIO
+Na tela de perfil mostrar:
+Técnico EcoOficina
+Nome do usuário.
+Técnico Especialista
+Unidade
+
+IVECO São Paulo
+굗굙굘 São Paulo — SP
+
+Adicionar:
+ Meu Perfil.
+ Minha Unidade.
+ Configurações.
+ Notificações.
+ Histórico.
+ Permissões.
+ Ajuda e suporte.
+ Sair.
+Adicionar uma identificação visual:
+● Unidade ativa: IVECO São Paulo
+
+5. DASHBOARD DA UNIDADE
+O dashboard deve ser personalizado para a unidade do usuário.
+Exemplo:
+IVECO São Paulo
+Bom dia, Técnico!
+Indicadores
+Peças em estoque
+128
+Peças disponíveis para troca
+42
+Peças reutilizadas
+87
+Itens aguardando descarte
+16
+
+CO2 evitado
+1.250 kg
+Solicitações de outras unidades
+7
+
+Adicionar uma seção:
+Atividades recentes
+ Nova solicitação de peça.
+ Peça recebida de outra unidade.
+ Peça adicionada ao estoque.
+ Coleta de resíduos agendada.
+ Nova análise concluída.
+
+6. SCANNER
+O Scanner deve possuir duas funções:
+럿렀렁렂렃렄렅렆렇레렉 CAMINHÕES
+Inspeção inteligente do caminhão
+ ANÁLISE DE PEÇAS
+Diagnóstico inteligente de componentes
+
+7. SCANNER DE CAMINHÕES
+Utilizar câmera com IA.
+A IA deverá reconhecer:
+ Marca.
+ Modelo.
+ Linha.
+ Versão.
+ Ano.
+
+ Categoria.
+ Motorização, quando identificável.
+ Componentes.
+ Peças ausentes.
+ Peças danificadas.
+ Peças que precisam de manutenção.
+ Peças que precisam ser substituídas.
+Criar uma representação visual do caminhão com pontos de identificação.
+Exemplo:
+믇 Motor — Normal
+믇 Pneus — Normal
+믆 Freios — Manutenção
+꼝 Lanterna — Ausente
+믆 Suspensão — Desgaste
+Caso uma peça precise ser substituída, o aplicativo deve
+automaticamente permitir:
+“Encontrar peça”
+E direcionar o usuário para:
+Estoque IVECO
+Priorizar nesta ordem:
+1. Estoque da própria unidade
+2. Estoque de outras unidades IVECO
+3. Concessionária/unidade mais próxima
+4. Solicitação de peça nova
+8. ANÁLISE DE PEÇAS
+Permitir:
+QR CODE
+Ler o QR Code da peça.
+CÂMERA
+Reconhecimento visual da peça através de IA.
+
+Identificar:
+ Código.
+ Nome.
+ Fabricante.
+ Local de produção.
+ Data de fabricação.
+ Modelo compatível.
+ Tempo de utilização.
+ Histórico.
+ Porcentagem de desgaste.
+ Integridade.
+ Corrosão.
+ Deformação.
+ Trincas.
+ Estado geral.
+
+9. DESTINO DA PEÇA
+A IA deverá classificar a peça:
+믇 REUTILIZAR
+Pode voltar à utilização.
+믇 REAPROVEITAR
+Pode ser utilizada para outra finalidade ou ter componentes aproveitados.
+믆 RECUPERAR
+Precisa passar por manutenção/recondicionamento.
+꼝 DESCARTAR
+Não possui condição adequada para utilização.
+Quando a recomendação for descartar, oferecer:
+“Enviar para descarte sustentável”
+
+10. NOVA FUNÇÃO — ESTOQUE DE PEÇAS
+Criar uma nova aba principal:
+귑귒귓귔귕귖 ESTOQUE
+Essa função será um estoque compartilhado entre todas as unidades IVECO
+cadastradas na plataforma.
+A ideia é criar uma espécie de:
+“Marketplace interno de peças IVECO”
+Porém, o objetivo principal não é venda, e sim:
+reaproveitamento + troca + redução de descarte + economia +
+disponibilidade de componentes.
+
+11. ESTOQUE DA MINHA UNIDADE
+Ao entrar em Estoque, mostrar:
+Meu estoque
+128 peças cadastradas
+Categorias:
+ Disponíveis.
+ Reservadas.
+ Em análise.
+ Em manutenção.
+ Aguardando envio.
+ Aguardando recebimento.
+ Destinadas ao descarte.
+Adicionar busca:
+꺐꺑꺏 Código, nome ou modelo
+Filtros:
+Categoria | Modelo | Estado | Disponibilidade | Localização
+
+12. CADASTRAR PEÇA NO ESTOQUE
+Criar botão:
+“+ Adicionar peça”
+O usuário poderá escanear o QR Code.
+O sistema automaticamente preencherá:
+ Código.
+ Nome.
+ Fabricante.
+ Modelo compatível.
+ Ano.
+ Estado.
+ Desgaste.
+ Origem.
+ Data de entrada.
+ Histórico.
+O usuário poderá complementar:
+Quantidade disponível
+Localização física dentro da unidade
+Exemplo:
+Almoxarifado B
+Prateleira 04
+Gaveta 12
+
+13. DISPONIBILIZAR PEÇA PARA OUTRAS UNIDADES
+Cada peça deve ter uma opção:
+“Disponibilizar para troca”
+Ao ativar, a peça passa a aparecer para outras unidades IVECO.
+Mostrar:
+
+믇Disponível para troca
+Informações:
+Suporte do Eixo Traseiro
+Código: 50418756
+Estado: 82% — Bom
+Desgaste: 18%
+Unidade:
+IVECO São Paulo
+
+14. BUSCA DE PEÇAS ENTRE UNIDADES
+Outra unidade poderá pesquisar:
+“Preciso do código 50418756”
+O aplicativo mostrará:
+Peças disponíveis na rede
+IVECO São Paulo
+굗굙굘 320 km
+믇 2 unidades
+Estado: Bom
+IVECO Campinas
+굗굙굘 95 km
+믇 1 unidade
+Estado: Excelente
+IVECO Curitiba
+굗굙굘 410 km
+믆 1 unidade
+Estado: Bom
+Ordenar por:
+Mais próxima | Melhor estado | Disponibilidade | Tempo de envio
+
+15. SISTEMA DE TROCA DE PEÇAS
+
+Criar botão:
+“Solicitar peça”
+A unidade solicitante envia um pedido para a unidade que possui o componente.
+Tela:
+Solicitação de peça
+Peça: Suporte do Eixo Traseiro
+Código: 50418756
+Quantidade: 1
+Unidade solicitante: IVECO Campinas
+Unidade fornecedora: IVECO São Paulo
+Botão:
+Enviar solicitação
+16. FLUXO DA TROCA
+Criar um fluxo visual:
+1 Solicitação enviada
+믆 Aguardando aprovação
+↓
+2 Unidade fornecedora aprova
+믇 Solicitação aprovada
+↓
+3 Separação
+귑귒귓귔귕귖 Peça sendo preparada
+↓
+4 Transporte
+럹럺럻럼랂럽럾 Peça em trânsito
+↓
+5 Recebimento
+믇 Peça recebida
+↓
+
+6 Estoque atualizado
+A peça passa automaticamente para o estoque da unidade solicitante.
+
+17. HISTÓRICO DE TROCAS
+Criar uma seção:
+“Movimentações”
+Mostrar:
+Enviadas
+ Peças enviadas para outras unidades.
+Recebidas
+ Peças recebidas.
+Solicitações
+ Pedidos realizados.
+Pendentes
+ Pedidos aguardando aprovação.
+
+18. NOVA ABA — DESCARTE SUSTENTÁVEL
+Criar uma seção principal:
+ DESCARTE
+Essa área será responsável por controlar todas as peças e materiais que não
+podem mais ser reutilizados.
+O objetivo é conectar as unidades IVECO com empresas especializadas em
+reciclagem, recuperação e tratamento de resíduos.
+
+19. CENTRAL DE DESCARTE
+Dashboard:
+Itens aguardando descarte
+16
+Peso estimado
+
+348 kg
+Coletas agendadas
+3
+Resíduos reciclados
+1.240 kg
+CO2 potencialmente evitado
+620 kg
+
+20. CADASTRAR ITEM PARA DESCARTE
+Botão:
+“+ Novo descarte”
+O usuário poderá escanear a peça através do QR Code.
+Preencher automaticamente:
+ Código.
+ Nome.
+ Tipo de material.
+ Peso.
+ Quantidade.
+ Estado.
+ Motivo do descarte.
+ Unidade de origem.
+Exemplo:
+Disco de freio
+Código: 50291832
+Material:
+Ferro fundido
+Quantidade:
+8 unidades
+
+Peso total:
+96 kg
+Motivo:
+Desgaste acima do limite
+
+21. CLASSIFICAÇÃO DOS RESÍDUOS
+Classificar automaticamente:
+ Metais
+꺆꺈꺇 Baterias
+묻물묽묾묿 Borracha
+뭍뭊뭋뭌 Óleos e fluidos
+꺉꺊꺋 Componentes eletrônicos
+   Plásticos
+ Componentes mecânicos
+넢넣네 Outros resíduos
+A classificação deve ajudar a encaminhar o material para a empresa adequada.
+
+22. EMPRESAS DE DESTINAÇÃO SUSTENTÁVEL
+Criar uma tela:
+“Empresas disponíveis”
+Mostrar empresas aptas a receber determinados tipos de resíduos.
+Exemplo:
+EcoMetal Reciclagem
+믇 Certificada
+굗굙굘 12 km
+Aceita:
+✓ Ferro
+✓ Alumínio
+✓ Aço
+Coleta disponível
+
+Botão:
+Agendar coleta
+
+ReciclaTech
+믇 Certificada
+굗굙굘 18 km
+Aceita:
+✓ Componentes eletrônicos
+✓ Cabos
+✓ Plásticos técnicos
+Botão:
+Agendar coleta
+
+Mostrar filtros:
+Distância | Tipo de resíduo | Disponibilidade | Certificação
+
+23. AGENDA DE DESCARTE
+Criar uma função:
+괜괝괞괟괠괡괢괧괣괤괥괦 “Agendar coleta”
+O usuário selecionará:
+Empresa
+EcoMetal Reciclagem
+Data
+15/09/2026
+Horário
+14:00 – 15:00
+Local
+IVECO São Paulo
+Materiais
+
+16 itens
+Peso
+348 kg
+Botão:
+Confirmar agendamento
+24. CONFIRMAÇÃO DA COLETA
+Após confirmar, mostrar:
+Coleta agendada ✓
+EcoMetal Reciclagem
+괜괝괞괟괠괡괢괧괣괤괥괦 15/09/2026
+꽊꽋꽌꽇꽍 14:00 – 15:00
+굗굙굘 IVECO São Paulo
+348 kg de resíduos
+Status:
+믇Agendamento confirmado
+Adicionar:
+“Adicionar ao calendário”
+“Ver detalhes”
+“Cancelar coleta”
+
+25. RASTREAMENTO DO DESCARTE
+Após a coleta, manter o histórico:
+Status
+믇 Coleta agendada
+믇 Material coletado
+꼞 Em transporte
+믇 Recebido pela empresa
+믇 Processamento iniciado
+믇 Destinação concluída
+
+Ao finalizar, gerar um comprovante:
+Certificado de destinação
+Mostrar:
+ Empresa responsável.
+ Data.
+ Quantidade.
+ Peso.
+ Tipo de material.
+ Método de destinação.
+ Unidade IVECO.
+ Número do processo/comprovante.
+Botão:
+“Baixar certificado”
+
+26. ECONOMIA CIRCULAR
+Criar uma área especial no dashboard chamada:
+芢芣 Impacto Ambiental
+Mostrar indicadores:
+Peças reutilizadas
+87
+Peças trocadas entre unidades
+42
+Resíduos reciclados
+1.240 kg
+CO2 evitado
+1.250 kg
+Materiais reaproveitados
+78%
+
+Criar gráficos mostrando a evolução mensal.
+
+27. INTELIGÊNCIA ENTRE AS UNIDADES
+O sistema deve utilizar os dados das unidades para sugerir
+automaticamente oportunidades.
+Exemplo:
+ Oportunidade de reaproveitamento
+“A unidade IVECO Curitiba possui uma peça compatível com o caminhão
+atualmente em manutenção na sua unidade.”
+Botão:
+Ver peça
+
+Outro exemplo:
+귑귒귓귔귕귖 Estoque parado
+“Você possui 8 unidades desta peça sem movimentação há 180 dias.”
+Sugestão:
+Disponibilizar para outras unidades
+
+Outro:
+ Descarte evitável
+“2 peças destinadas ao descarte possuem possibilidade de recuperação.”
+Botão:
+Reanalisar peças
+
+28. NOTIFICAÇÕES
+Criar sistema de notificações inteligente:
+꺣꺤꺥Nova solicitação
+“IVECO Campinas solicitou uma peça do seu estoque.”
+
+꺣꺤꺥Peça disponível
+“Encontramos uma peça compatível em uma unidade a 95 km.”
+꺣꺤꺥Coleta amanhã
+“A EcoMetal realizará a coleta amanhã às 14h.”
+꺣꺤꺥Estoque
+“Você possui peças disponíveis para compartilhamento.”
+꺣꺤꺥Análise concluída
+“A análise da peça 50418756 foi concluída.”
+
+29. PERMISSÕES POR PERFIL
+Criar diferentes níveis de acesso:
+Técnico
+ Scanner.
+ Consultar peças.
+ Solicitar peças.
+ Cadastrar análise.
+Gestor da unidade
+ Gerenciar estoque.
+ Aprovar trocas.
+ Gerenciar descarte.
+ Agendar coletas.
+ Visualizar indicadores.
+Administrador
+ Gerenciar unidades.
+ Gerenciar usuários.
+ Gerenciar empresas parceiras.
+ Gerenciar permissões.
+ Visualizar indicadores globais.
+
+30. TELA DE PERFIL DA UNIDADE
+Criar:
+Minha Unidade
+IVECO São Paulo
+굗굙굘 São Paulo — SP
+Indicadores
+Estoque: 128 peças
+Disponíveis para troca: 42
+Em descarte: 16
+Peças reutilizadas: 87
+CO2 evitado: 1.250 kg
+Adicionar:
+Gerenciar estoque
+Gerenciar descartes
+Agenda de coletas
+Histórico da unidade
+1. 31. FLUXO COMPLETO DO ECOSSISTEMA
+O aplicativo deve representar visualmente um ciclo:
+Caminhão
+↓
+Scanner com IA
+↓
+Identificação da peça
+↓
+Diagnóstico
+↓
+Peça em boas condições
+
+Reutilizar
+↓
+Estoque da unidade
+↓
+Disponibilizar para outras unidades
+↓
+Troca entre unidades
+↓
+Nova utilização
+
+Peça recuperável
+Recondicionar
+↓
+Estoque
+↓
+Reutilizar
+
+Peça sem possibilidade de reutilização
+Descarte
+↓
+Classificação do resíduo
+↓
+Empresa especializada
+↓
+Agendamento
+↓
+Coleta na unidade
+↓
+
+Processamento
+↓
+Reciclagem / destinação sustentável
+↓
+Certificado
+
+32. CONCEITO PRINCIPAL DO PRODUTO
+O aplicativo não deve parecer apenas um scanner.
+Ele deve transmitir que é uma rede inteligente de economia circular da IVECO.
+A lógica central da plataforma deve ser:
+IDENTIFICAR → ANALISAR → DECIDIR → REUTILIZAR → COMPARTILHAR →
+RECICLAR
+Sempre que uma peça puder ser reaproveitada, o sistema deve priorizar
+essa alternativa antes de recomendar descarte.
+Quando não houver possibilidade de reaproveitamento, o sistema deve direcionar
+o material para uma empresa especializada e permitir o agendamento completo
+da coleta.
+
+33. TELAS QUE DEVEM SER GERADAS
+Criar protótipos de alta fidelidade para:
+
+1. Login
+2. Cadastro
+3. Seleção obrigatória da unidade IVECO
+4. Dashboard
+5. Scanner — seleção de função
+6. Scanner de caminhão
+7. Análise do caminhão
+8. Resultado do caminhão
+9. Localização de peças
+
+10. Scanner de peça
+11. Leitura de QR Code
+12.Análise da peça
+13.Resultado da peça
+14.Diagnóstico detalhado
+15.Recomendação de destino
+16. Estoque da unidade
+17. Estoque geral IVECO
+18.Detalhes da peça
+19.Adicionar peça ao estoque
+20.Disponibilizar peça para troca
+21. Solicitar peça
+22.Aprovação da troca
+23.Rastreamento do envio
+24.Recebimento
+25.Central de descarte
+26.Adicionar item para descarte
+27. Empresas sustentáveis
+28.Detalhes da empresa
+29.Agenda de coleta
+30.Confirmação de coleta
+31.Rastreamento da coleta
+32.Certificado de destinação
+33. Impacto ambiental
+34. Histórico
+35. Notificações
+36. Perfil
+37.Minha unidade
+
+38.Configurações
+
+DIREÇÃO FINAL
+Não descaracterizar a interface da imagem de referência.
+A nova versão deve parecer uma evolução natural do aplicativo existente,
+porém com uma arquitetura muito mais completa.
+O resultado final deve transmitir:
+IVECO + IA + Manutenção + Estoque + Compartilhamento + Economia Circular
++ Sustentabilidade
+Visualmente, deve parecer um produto digital real, pronto para apresentação a
+uma empresa, e não apenas um conceito.
+Utilizar Português do Brasil, formato mobile iOS, proporção 9:19.5, alta
+fidelidade, componentes consistentes e navegação realista entre todas as telas.
+Priorizar clareza, facilidade de uso e aparência premium.

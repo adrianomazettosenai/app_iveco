@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-iveco-green: #00e676;
+    --color-iveco-green-dark: #00b359;
+    --color-iveco-green-glow: rgba(0, 230, 118, 0.35);
+    --color-card-bg: #121820;
+    --color-card-border: rgba(255, 255, 255, 0.08);
+    --color-bg-dark: #090d12;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #070a0e;
+    color: #e5e7eb;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1, h2, h3, .font-heading {
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  .font-mono-tech {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 230, 118, 0.25);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 230, 118, 0.6);
+}
+
+/* Glassmorphic cards matching reference */
+.iveco-card {
+  background: linear-gradient(180deg, #151c24 0%, #10151c 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+  border-radius: 16px;
+}
+
+.iveco-card-interactive {
+  background: linear-gradient(180deg, #161e27 0%, #10151c 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  border-radius: 16px;
+}
+
+.iveco-card-interactive:hover {
+  border-color: rgba(0, 230, 118, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -4px rgba(0, 230, 118, 0.15);
+}
+
+.iveco-card-selected {
+  background: linear-gradient(180deg, #17241d 0%, #101a14 100%);
+  border: 1px solid rgba(0, 230, 118, 0.5);
+  box-shadow: 0 0 20px -2px rgba(0, 230, 118, 0.25);
+}
+
+/* Futuristic Scanline and Laser Animations */
+@keyframes laserSweep {
+  0% {
+    top: 0%;
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0.8;
+  }
+}
+
+.animate-laser {
+  animation: laserSweep 2.2s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+@keyframes radarRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-radar {
+  animation: radarRotate 4s linear infinite;
+}
+
+/* Green Glow Utility */
+.glow-iveco {
+  box-shadow: 0 0 25px -3px rgba(0, 230, 118, 0.4);
+}
+
+.glow-iveco-subtle {
+  box-shadow: 0 0 15px -3px rgba(0, 230, 118, 0.2);
+}
+
+.glow-text-green {
+  text-shadow: 0 0 12px rgba(0, 230, 118, 0.6);
+}
+
+/* Realistic Mobile Frame Viewport */
+.mobile-notch {
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+}
