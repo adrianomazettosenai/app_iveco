@@ -104,8 +104,45 @@ export default function App() {
 
     loadInitialData();
 
-    // Set up Realtime subscriptions if configured
+    // Set up Auth session listener for Google OAuth
     if (isSupabaseConfigured && supabase) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user) {
+          const authUser = session.user;
+          const name = authUser.user_metadata?.full_name || authUser.user_metadata?.name || authUser.email?.split('@')[0];
+          const avatarUrl = authUser.user_metadata?.avatar_url || authUser.user_metadata?.picture;
+          setUser(prev => ({
+            ...prev,
+            name: name || prev.name,
+            email: authUser.email || prev.email,
+            avatarUrl: avatarUrl || prev.avatarUrl,
+            id: authUser.id
+          }));
+          if (['splash', 'login', 'cadastro_1', 'cadastro_2', 'cadastro_3'].includes(currentScreen)) {
+            setCurrentScreen('dashboard');
+          }
+        }
+      });
+
+      const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' && session?.user) {
+          const authUser = session.user;
+          const name = authUser.user_metadata?.full_name || authUser.user_metadata?.name || authUser.email?.split('@')[0];
+          const avatarUrl = authUser.user_metadata?.avatar_url || authUser.user_metadata?.picture;
+          setUser(prev => ({
+            ...prev,
+            name: name || prev.name,
+            email: authUser.email || prev.email,
+            avatarUrl: avatarUrl || prev.avatarUrl,
+            id: authUser.id
+          }));
+          setCurrentScreen('dashboard');
+        } else if (event === 'SIGNED_OUT') {
+          setCurrentScreen('login');
+        }
+      });
+
+      // Set up Realtime subscriptions
       const channel = supabase
         .channel('app-realtime-changes')
         .on(
@@ -120,6 +157,7 @@ export default function App() {
         .subscribe();
 
       return () => {
+        authSub?.unsubscribe();
         supabase.removeChannel(channel);
       };
     }

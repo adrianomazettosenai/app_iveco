@@ -58,6 +58,38 @@ export async function getUnits() {
 }
 
 // ==============================================================================
+// 1.1 AUTENTICAÇÃO SUPABASE & GOOGLE OAUTH
+// ==============================================================================
+export async function signInWithGoogle() {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase não configurado');
+  }
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.origin
+    }
+  });
+  if (error) throw error;
+  return data;
+}
+
+export async function signInWithEmail(email, password) {
+  if (!isSupabaseConfigured || !supabase) return null;
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+  if (error) throw error;
+  return data;
+}
+
+export async function signOutUser() {
+  if (!isSupabaseConfigured || !supabase) return;
+  await supabase.auth.signOut();
+}
+
+// ==============================================================================
 // 2. PERFIL DO USUÁRIO
 // ==============================================================================
 export async function getUserProfile(email = 'adriano.ribeiro@iveco.com') {
