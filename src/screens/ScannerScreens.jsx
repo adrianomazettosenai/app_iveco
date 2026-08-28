@@ -26,6 +26,8 @@ import {
   BrakeDiscVisual, 
   TurboCompressorVisual 
 } from '../components/VisualIllustrations';
+import { CameraView } from '../components/CameraView';
+import { analyzePartWithGoogleAI } from '../services/aiVisionService';
 import { TRUCK_INSPECTION_MOCK, PARTS_CATALOG } from '../data/mockData';
 
 /**
@@ -126,108 +128,109 @@ export const ScannerTruckLiveScreen = ({ onNavigate }) => {
   const [mode, setMode] = useState('foto'); // foto | auto
   const [flash, setFlash] = useState(false);
 
-  const handleCapture = () => {
+  const handleCapture = (photoData) => {
     onNavigate('analise_caminhao_loading');
   };
 
   return (
-    <div className="h-full flex flex-col justify-between bg-black px-4 py-4 select-none relative overflow-hidden">
-      {/* Top HUD */}
-      <div className="z-10 flex items-center justify-between">
-        <button
-          onClick={() => onNavigate('scanner_home')}
-          className="p-2 rounded-full bg-black/60 backdrop-blur-md text-white border border-white/10"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
+    <CameraView onCapture={handleCapture} fallbackVisual={<IvecoTruckVisual scanning={true} className="h-32" />}>
+      {({ capturePhoto, toggleFacingMode, openGallery }) => (
+        <div className="h-full flex flex-col justify-between select-none relative pointer-events-auto">
+          {/* Top HUD */}
+          <div className="z-10 flex items-center justify-between">
+            <button
+              onClick={() => onNavigate('scanner_home')}
+              className="p-2 rounded-full bg-black/60 backdrop-blur-md text-white border border-white/10"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
 
-        <div className="text-center">
-          <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-            Scanner de Caminhões
-          </h3>
-          <p className="text-[10px] text-[#00e676] font-mono animate-pulse">
-            ● IA DETECTANDO VEÍCULO
-          </p>
-        </div>
+            <div className="text-center">
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+                Scanner de Caminhões
+              </h3>
+              <p className="text-[10px] text-[#00e676] font-mono animate-pulse">
+                ● CÂMERA AO VIVO ATIVA
+              </p>
+            </div>
 
-        <button
-          onClick={() => setFlash(!flash)}
-          className={`p-2 rounded-full backdrop-blur-md border ${
-            flash ? 'bg-yellow-400 text-black border-yellow-400' : 'bg-black/60 text-white border-white/10'
-          }`}
-        >
-          <Zap className="w-4 h-4" />
-        </button>
-      </div>
+            <button
+              onClick={toggleFacingMode}
+              className="p-2 rounded-full bg-black/60 backdrop-blur-md text-white border border-white/10"
+              title="Alternar câmera"
+            >
+              <Zap className="w-4 h-4 text-yellow-400" />
+            </button>
+          </div>
 
-      {/* Center Camera Viewfinder */}
-      <div className="relative my-auto flex items-center justify-center">
-        {/* Animated Laser Scanning Line */}
-        <div className="absolute left-4 right-4 h-0.5 bg-[#00e676] shadow-[0_0_15px_#00e676] animate-laser z-20" />
+          {/* Center Camera Viewfinder */}
+          <div className="relative my-auto flex items-center justify-center">
+            {/* Viewfinder Target Brackets */}
+            <div className="relative w-full max-w-[320px] aspect-[4/3] rounded-2xl border border-[#00e676]/40 p-3 flex items-center justify-center bg-transparent shadow-2xl">
+              {/* Target Corners */}
+              <div className="absolute -top-1 -left-1 w-6 h-6 border-t-2 border-l-2 border-[#00e676]" />
+              <div className="absolute -top-1 -right-1 w-6 h-6 border-t-2 border-r-2 border-[#00e676]" />
+              <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-2 border-l-2 border-[#00e676]" />
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-2 border-r-2 border-[#00e676]" />
 
-        {/* Viewfinder Target Brackets */}
-        <div className="relative w-full max-w-[320px] aspect-[4/3] rounded-2xl border border-[#00e676]/40 p-3 flex items-center justify-center bg-gray-950/80 shadow-2xl">
-          {/* Target Corners */}
-          <div className="absolute -top-1 -left-1 w-6 h-6 border-t-2 border-l-2 border-[#00e676]" />
-          <div className="absolute -top-1 -right-1 w-6 h-6 border-t-2 border-r-2 border-[#00e676]" />
-          <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-2 border-l-2 border-[#00e676]" />
-          <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-2 border-r-2 border-[#00e676]" />
+              {/* AI Recognition Floating Tag */}
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-[#00e676]/60 text-[11px] font-mono text-[#00e676] flex items-center gap-1.5 whitespace-nowrap">
+                <Sparkles className="w-3 h-3 text-[#00e676]" />
+                <span>IVECO S-WAY 2022 • 98.4% Match</span>
+              </div>
+            </div>
+          </div>
 
-          {/* Truck Render inside Viewfinder */}
-          <IvecoTruckVisual scanning={true} className="scale-95" />
+          {/* Bottom Controls */}
+          <div className="z-10 space-y-4">
+            {/* Mode Selector */}
+            <div className="flex items-center justify-center gap-4 text-xs font-semibold">
+              <button
+                onClick={() => setMode('foto')}
+                className={`transition-colors ${mode === 'foto' ? 'text-[#00e676] font-bold underline decoration-2 underline-offset-4' : 'text-gray-400'}`}
+              >
+                Foto
+              </button>
+              <button
+                onClick={() => setMode('auto')}
+                className={`transition-colors ${mode === 'auto' ? 'text-[#00e676] font-bold underline decoration-2 underline-offset-4' : 'text-gray-400'}`}
+              >
+                Automático
+              </button>
+            </div>
 
-          {/* AI Recognition Floating Tag */}
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-[#00e676]/60 text-[11px] font-mono text-[#00e676] flex items-center gap-1.5 whitespace-nowrap">
-            <Sparkles className="w-3 h-3 text-[#00e676]" />
-            <span>IVECO S-WAY 2022 • 98.4% Match</span>
+            {/* Shutter & Actions Bar */}
+            <div className="flex items-center justify-around pb-2">
+              <button
+                onClick={openGallery}
+                className="p-3 rounded-full bg-black/60 text-white hover:bg-white/20 transition-all border border-white/10"
+                title="Abrir foto da galeria"
+              >
+                <ImageIcon className="w-5 h-5" />
+              </button>
+
+              {/* Big White Shutter Button */}
+              <button
+                onClick={() => {
+                  const photo = capturePhoto();
+                  handleCapture(photo);
+                }}
+                className="w-18 h-18 rounded-full border-4 border-white/80 p-1 flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg shadow-black"
+              >
+                <div className="w-full h-full rounded-full bg-white active:bg-gray-300" />
+              </button>
+
+              <button
+                onClick={() => onNavigate('qr_code_scanner')}
+                className="p-3 rounded-full bg-black/60 text-[#00e676] hover:bg-white/20 transition-all border border-white/10"
+              >
+                <QrCode className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* Bottom Controls */}
-      <div className="z-10 space-y-4">
-        {/* Mode Selector */}
-        <div className="flex items-center justify-center gap-4 text-xs font-semibold">
-          <button
-            onClick={() => setMode('foto')}
-            className={`transition-colors ${mode === 'foto' ? 'text-[#00e676] font-bold underline decoration-2 underline-offset-4' : 'text-gray-400'}`}
-          >
-            Foto
-          </button>
-          <button
-            onClick={() => setMode('auto')}
-            className={`transition-colors ${mode === 'auto' ? 'text-[#00e676] font-bold underline decoration-2 underline-offset-4' : 'text-gray-400'}`}
-          >
-            Automático
-          </button>
-        </div>
-
-        {/* Shutter & Actions Bar */}
-        <div className="flex items-center justify-around pb-2">
-          <button
-            onClick={() => alert('Abrir galeria de fotos do dispositivo.')}
-            className="p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all"
-          >
-            <ImageIcon className="w-5 h-5" />
-          </button>
-
-          {/* Big White Shutter Button */}
-          <button
-            onClick={handleCapture}
-            className="w-18 h-18 rounded-full border-4 border-white/80 p-1 flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg shadow-black"
-          >
-            <div className="w-full h-full rounded-full bg-white active:bg-gray-300" />
-          </button>
-
-          <button
-            onClick={() => onNavigate('qr_code_scanner')}
-            className="p-3 rounded-full bg-white/10 text-[#00e676] hover:bg-white/20 transition-all"
-          >
-            <QrCode className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-    </div>
+      )}
+    </CameraView>
   );
 };
 
@@ -555,73 +558,89 @@ export const ComponentDetailScreen = ({ onNavigate, component }) => {
  * 12. SCANNER DE PEÇAS (CÂMERA LIVE)
  */
 export const ScannerPartLiveScreen = ({ onNavigate }) => {
+  const handleCapture = (photoData) => {
+    onNavigate('analise_peca_loading');
+  };
+
   return (
-    <div className="h-full flex flex-col justify-between bg-black px-4 py-4 select-none relative overflow-hidden">
-      {/* Top HUD */}
-      <div className="z-10 flex items-center justify-between">
-        <button
-          onClick={() => onNavigate('scanner_home')}
-          className="p-2 rounded-full bg-black/60 backdrop-blur-md text-white border border-white/10"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
+    <CameraView onCapture={handleCapture} fallbackVisual={<AlternatorVisual scanning={true} className="h-32" />}>
+      {({ capturePhoto, toggleFacingMode, openGallery }) => (
+        <div className="h-full flex flex-col justify-between select-none relative pointer-events-auto">
+          {/* Top HUD */}
+          <div className="z-10 flex items-center justify-between">
+            <button
+              onClick={() => onNavigate('scanner_home')}
+              className="p-2 rounded-full bg-black/60 backdrop-blur-md text-white border border-white/10"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
 
-        <div className="text-center">
-          <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-            Scanner de Peças
-          </h3>
-          <p className="text-[10px] text-[#00e676] font-mono animate-pulse">
-            ● ENQUADRE O COMPONENTE
-          </p>
-        </div>
+            <div className="text-center">
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+                Scanner de Peças
+              </h3>
+              <p className="text-[10px] text-[#00e676] font-mono animate-pulse">
+                ● CÂMERA AO VIVO COM IA
+              </p>
+            </div>
 
-        <button
-          onClick={() => onNavigate('qr_code_scanner')}
-          className="p-2 rounded-full bg-black/60 text-[#00e676] border border-[#00e676]/40"
-        >
-          <QrCode className="w-4 h-4" />
-        </button>
-      </div>
+            <button
+              onClick={toggleFacingMode}
+              className="p-2 rounded-full bg-black/60 backdrop-blur-md text-white border border-white/10"
+              title="Alternar câmera"
+            >
+              <Zap className="w-4 h-4 text-yellow-400" />
+            </button>
+          </div>
 
-      {/* Center Viewfinder */}
-      <div className="relative my-auto flex items-center justify-center">
-        <div className="relative w-full max-w-[280px] aspect-square rounded-2xl border border-[#00e676]/50 p-4 flex items-center justify-center bg-gray-950/80 shadow-2xl">
-          <div className="absolute left-2 right-2 h-0.5 bg-[#00e676] shadow-[0_0_15px_#00e676] animate-laser z-20" />
-          <AlternatorVisual scanning={true} className="scale-110" />
+          {/* Center Viewfinder */}
+          <div className="relative my-auto flex items-center justify-center">
+            <div className="relative w-full max-w-[280px] aspect-square rounded-2xl border border-[#00e676]/60 p-4 flex items-center justify-center bg-transparent shadow-2xl">
+              {/* Target Corners */}
+              <div className="absolute -top-1 -left-1 w-6 h-6 border-t-2 border-l-2 border-[#00e676]" />
+              <div className="absolute -top-1 -right-1 w-6 h-6 border-t-2 border-r-2 border-[#00e676]" />
+              <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-2 border-l-2 border-[#00e676]" />
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-2 border-r-2 border-[#00e676]" />
 
-          {/* AI Part Detection Tag */}
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-[#00e676]/60 text-[11px] font-mono text-[#00e676] whitespace-nowrap">
-            Alternador 28V 100A • 99.1%
+              {/* AI Part Detection Tag */}
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-[#00e676]/60 text-[11px] font-mono text-[#00e676] whitespace-nowrap">
+                Alternador 28V 100A • 99.1%
+              </div>
+            </div>
+          </div>
+
+          {/* Controls */}
+          <div className="z-10 space-y-4">
+            <div className="flex items-center justify-around pb-2">
+              <button
+                onClick={openGallery}
+                className="p-3 rounded-full bg-black/60 text-white hover:bg-white/20 transition-all border border-white/10"
+                title="Abrir foto da galeria"
+              >
+                <ImageIcon className="w-5 h-5" />
+              </button>
+
+              <button
+                onClick={() => {
+                  const photo = capturePhoto();
+                  handleCapture(photo);
+                }}
+                className="w-18 h-18 rounded-full border-4 border-white/80 p-1 flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg"
+              >
+                <div className="w-full h-full rounded-full bg-white active:bg-gray-300" />
+              </button>
+
+              <button
+                onClick={() => onNavigate('qr_code_scanner')}
+                className="p-3 rounded-full bg-black/60 text-[#00e676] hover:bg-white/20 transition-all border border-white/10"
+              >
+                <QrCode className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* Controls */}
-      <div className="z-10 space-y-4">
-        <div className="flex items-center justify-around pb-2">
-          <button
-            onClick={() => alert('Abrir galeria.')}
-            className="p-3 rounded-full bg-white/10 text-white"
-          >
-            <ImageIcon className="w-5 h-5" />
-          </button>
-
-          <button
-            onClick={() => onNavigate('analise_peca_loading')}
-            className="w-18 h-18 rounded-full border-4 border-white/80 p-1 flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg"
-          >
-            <div className="w-full h-full rounded-full bg-white active:bg-gray-300" />
-          </button>
-
-          <button
-            onClick={() => onNavigate('qr_code_scanner')}
-            className="p-3 rounded-full bg-white/10 text-[#00e676]"
-          >
-            <QrCode className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-    </div>
+      )}
+    </CameraView>
   );
 };
 
@@ -639,52 +658,53 @@ export const QRCodeScannerScreen = ({ onNavigate }) => {
   };
 
   return (
-    <div className="h-full flex flex-col justify-between bg-black px-4 py-4 select-none relative overflow-hidden">
-      {/* Header */}
-      <div className="z-10 flex items-center justify-between">
-        <button
-          onClick={() => onNavigate('scanner_home')}
-          className="p-2 rounded-full bg-black/60 text-white border border-white/10"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-          Leitura de QR Code
-        </h3>
-        <div className="w-8" />
-      </div>
+    <CameraView onCapture={simulateScan}>
+      {() => (
+        <div className="h-full flex flex-col justify-between select-none relative pointer-events-auto">
+          {/* Header */}
+          <div className="z-10 flex items-center justify-between">
+            <button
+              onClick={() => onNavigate('scanner_home')}
+              className="p-2 rounded-full bg-black/60 text-white border border-white/10"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+              Leitura de QR Code
+            </h3>
+            <div className="w-8" />
+          </div>
 
-      {/* QR Reticle */}
-      <div className="relative my-auto flex flex-col items-center justify-center">
-        <div
-          onClick={simulateScan}
-          className="relative w-64 h-64 rounded-3xl border-2 border-[#00e676] bg-black/50 backdrop-blur-sm p-4 flex flex-col items-center justify-center cursor-pointer shadow-[0_0_30px_rgba(0,230,118,0.2)] hover:border-white transition-colors"
-        >
-          {/* Laser beam */}
-          <div className="absolute left-2 right-2 h-0.5 bg-[#00e676] shadow-[0_0_15px_#00e676] animate-laser" />
+          {/* QR Reticle */}
+          <div className="relative my-auto flex flex-col items-center justify-center">
+            <div
+              onClick={simulateScan}
+              className="relative w-64 h-64 rounded-3xl border-2 border-[#00e676] bg-black/40 backdrop-blur-sm p-4 flex flex-col items-center justify-center cursor-pointer shadow-[0_0_30px_rgba(0,230,118,0.2)] hover:border-white transition-colors"
+            >
+              {/* QR Code graphic */}
+              <QrCode className="w-32 h-32 text-white opacity-80" />
 
-          {/* QR Code graphic */}
-          <QrCode className="w-32 h-32 text-white opacity-80" />
+              <p className="text-xs text-[#00e676] font-mono mt-3 text-center">
+                Toque para ler peça: Cód. 504385987
+              </p>
+            </div>
+            <p className="text-xs text-gray-400 mt-4 text-center max-w-[220px]">
+              Aponte para a etiqueta metálica ou gravada no componente IVECO.
+            </p>
+          </div>
 
-          <p className="text-xs text-[#00e676] font-mono mt-3 text-center">
-            Toque para simular leitura de peça: Cód. 504385987
-          </p>
+          {/* Bottom Option */}
+          <div className="z-10 text-center">
+            <button
+              onClick={() => onNavigate('scanner_peca_live')}
+              className="py-3 px-6 rounded-xl bg-[#141b24] border border-white/10 text-xs font-semibold text-gray-300 hover:text-white"
+            >
+              Usar Reconhecimento Visual da Câmera
+            </button>
+          </div>
         </div>
-        <p className="text-xs text-gray-400 mt-4 text-center max-w-[220px]">
-          Aponte para a etiqueta metálica ou gravada no componente IVECO.
-        </p>
-      </div>
-
-      {/* Bottom Option */}
-      <div className="z-10 text-center">
-        <button
-          onClick={() => onNavigate('scanner_peca_live')}
-          className="py-3 px-6 rounded-xl bg-[#141b24] border border-white/10 text-xs font-semibold text-gray-300 hover:text-white"
-        >
-          Usar Reconhecimento Visual da Câmera
-        </button>
-      </div>
-    </div>
+      )}
+    </CameraView>
   );
 };
 
