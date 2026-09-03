@@ -977,6 +977,14 @@ export const PartDiagnosticDetailScreen = ({ onNavigate, part }) => {
 export const PartDestinationDecisionScreen = ({ onNavigate, part }) => {
   const destinations = [
     {
+      id: 'recondicionar_3d',
+      title: 'RECONDICIONAR EM 3D (POLÍMEROS)',
+      desc: 'Fabricar ou reparar via Manufatura Aditiva com PA12-CF ou PEEK. Alivia até 67% de peso no veículo.',
+      color: '#00e676',
+      badge: 'Inovação Ecoficina',
+      action: () => onNavigate('ordem_impressao_3d')
+    },
+    {
       id: 'reutilizar',
       title: 'REUTILIZAR',
       desc: 'Pode voltar diretamente à utilização no estoque local ou em caminhão.',
@@ -988,7 +996,7 @@ export const PartDestinationDecisionScreen = ({ onNavigate, part }) => {
       id: 'reaproveitar',
       title: 'REAPROVEITAR',
       desc: 'Pode ser utilizada para outra finalidade ou ter componentes internos aproveitados.',
-      color: '#00e676',
+      color: '#38bdf8',
       action: () => onNavigate('disponibilizar_troca')
     },
     {

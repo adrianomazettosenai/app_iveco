@@ -13,7 +13,8 @@ import {
   LogOut, 
   ShieldCheck,
   ChevronDown,
-  QrCode
+  QrCode,
+  Printer
 } from 'lucide-react';
 import { IVECO_UNITS } from '../data/mockData';
 
@@ -41,6 +42,13 @@ export const DesktopSidebar = ({
         { id: 'estoque_local', label: 'Estoque da Unidade', icon: Layers, activeScreens: ['estoque_local', 'estoque_detalhe', 'adicionar_peca'] },
         { id: 'estoque_rede', label: 'Rede Nacional IVECO', icon: Building2, activeScreens: ['estoque_rede'] },
         { id: 'trocas_lista', label: 'Solicitações de Troca', icon: Truck, badge: 1, activeScreens: ['trocas_lista', 'nova_solicitacao', 'rastreamento_troca'] },
+      ]
+    },
+    {
+      title: 'Manufatura Aditiva & 3D',
+      items: [
+        { id: 'hub_3d', label: 'Célula 3D & Status', icon: Printer, activeScreens: ['hub_3d', 'rastreamento_impressao'] },
+        { id: 'catalogo_3d', label: 'Catálogo CAD de Peças', icon: Layers, activeScreens: ['catalogo_3d', 'ordem_impressao_3d'] },
       ]
     },
     {
@@ -169,7 +177,7 @@ export const DesktopSidebar = ({
               className="w-8 h-8 rounded-full object-cover border border-[#00e676]/40"
             />
             <div className="text-left">
-              <h4 className="text-xs font-bold text-white line-clamp-1">{user?.name || 'Adriano Ribeiro'}</h4>
+              <h4 className="text-xs font-bold text-white line-clamp-1">{user?.name || 'Gaspar Ricardo Junior'}</h4>
               <p className="text-[10px] text-gray-400 line-clamp-1">{user?.roleTitle || 'Técnico Especialista'}</p>
             </div>
           </div>

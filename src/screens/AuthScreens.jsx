@@ -79,7 +79,7 @@ export const SplashScreen = ({ onNavigate }) => {
  */
 export const LoginScreen = ({ onNavigate, onLogin }) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('adriano.ribeiro@iveco.com');
+  const [email, setEmail] = useState('gaspar.junior@iveco.com');
   const [password, setPassword] = useState('••••••••••••');
   const [loadingGoogle, setLoadingGoogle] = useState(false);
 
@@ -275,7 +275,7 @@ export const CadastroStep1Screen = ({ onNavigate, formData, setFormData }) => {
           </div>
           <input
             type="text"
-            defaultValue={formData?.name || "Adriano Ribeiro"}
+            defaultValue={formData?.name || "Gaspar Ricardo Junior"}
             onChange={(e) => handleChange('name', e.target.value)}
             placeholder="Nome completo"
             className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#141b24] border border-white/10 text-white text-xs placeholder-gray-400 focus:outline-none focus:border-[#00e676]"
@@ -289,7 +289,7 @@ export const CadastroStep1Screen = ({ onNavigate, formData, setFormData }) => {
           </div>
           <input
             type="email"
-            defaultValue={formData?.email || "adriano.ribeiro@iveco.com"}
+            defaultValue={formData?.email || "gaspar.junior@iveco.com"}
             onChange={(e) => handleChange('email', e.target.value)}
             placeholder="E-mail corporativo"
             className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#141b24] border border-white/10 text-white text-xs placeholder-gray-400 focus:outline-none focus:border-[#00e676]"

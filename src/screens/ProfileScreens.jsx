@@ -29,7 +29,7 @@ import { IvecoFacilityVisual } from '../components/VisualIllustrations';
  */
 export const UserProfileScreen = ({ user, unit, onNavigate, onLogout }) => {
   const currentUser = user || {
-    name: 'Adriano Ribeiro',
+    name: 'Gaspar Ricardo Junior',
     roleTitle: 'Técnico Especialista',
     department: 'Técnico EcoOficina'
   };

@@ -11,7 +11,8 @@ import {
   Trash2, 
   User, 
   Home,
-  CheckCircle2
+  CheckCircle2,
+  Printer
 } from 'lucide-react';
 
 export const ScreenNavigator = ({ currentScreen, onSelectScreen }) => {
@@ -58,7 +59,7 @@ export const ScreenNavigator = ({ currentScreen, onSelectScreen }) => {
         { id: 'analise_peca_loading', name: '18. Análise da Peça por IA' },
         { id: 'resultado_peca', name: '19. Resultado da Peça' },
         { id: 'diagnostico_detalhado', name: '20. Diagnóstico Técnico Detalhado' },
-        { id: 'decisao_destino', name: '21. Recomendação de Destino (4 Destinos)' }
+        { id: 'decisao_destino', name: '21. Recomendação de Destino (5 Destinos IA)' }
       ]
     },
     {
@@ -91,14 +92,25 @@ export const ScreenNavigator = ({ currentScreen, onSelectScreen }) => {
       ]
     },
     {
-      category: '6. Perfil, Unidade & Configurações',
+      category: '6. Célula 3D & Polímeros Reforçados',
+      icon: Printer,
+      color: '#00e676',
+      screens: [
+        { id: 'hub_3d', name: '37. Hub 3D & Status das Impressoras' },
+        { id: 'catalogo_3d', name: '38. Catálogo Digital CAD de Peças' },
+        { id: 'ordem_impressao_3d', name: '39. Configurar Ordem de Impressão 3D' },
+        { id: 'rastreamento_impressao', name: '40. Telemetria da Impressora em Tempo Real' }
+      ]
+    },
+    {
+      category: '7. Perfil, Unidade & Configurações',
       icon: User,
       color: '#a855f7',
       screens: [
-        { id: 'perfil', name: '37. Perfil do Técnico' },
-        { id: 'minha_unidade', name: '38. Minha Concessionária IVECO' },
-        { id: 'permissoes', name: '39. Níveis de Permissão por Perfil' },
-        { id: 'configuracoes', name: '40. Configurações do Aplicativo' }
+        { id: 'perfil', name: '41. Perfil do Técnico' },
+        { id: 'minha_unidade', name: '42. Minha Concessionária IVECO' },
+        { id: 'permissoes', name: '43. Níveis de Permissão por Perfil' },
+        { id: 'configuracoes', name: '44. Configurações do Aplicativo' }
       ]
     }
   ];
@@ -112,8 +124,14 @@ export const ScreenNavigator = ({ currentScreen, onSelectScreen }) => {
           className="flex items-center gap-2 px-3.5 py-2.5 rounded-full bg-[#141b24]/95 hover:bg-[#1a2430] border border-[#00e676]/50 text-white shadow-2xl backdrop-blur-xl transition-all hover:scale-105 active:scale-95 group"
         >
           <div className="w-6 h-6 rounded-full bg-[#00e676] text-black flex items-center justify-center font-bold text-xs">
-            38
+            44
           </div>
+          <span className="text-xs font-bold text-[#00e676] group-hover:text-white">
+            Navegador de Telas
+          </span>
+          <Grid className="w-4 h-4 text-gray-400 group-hover:text-[#00e676]" />
+        </button>
+      </div>
           <span className="text-xs font-bold text-[#00e676] group-hover:text-white">
             Navegador de Telas
           </span>

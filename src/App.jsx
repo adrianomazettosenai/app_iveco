@@ -67,7 +67,15 @@ import {
   SettingsScreen 
 } from './screens/ProfileScreens';
 
-import { INITIAL_USER, IVECO_UNITS, PARTS_CATALOG, TRUCK_INSPECTION_MOCK } from './data/mockData';
+// 3D Printing & Reconditioning Screens
+import { 
+  Hub3DHomeScreen, 
+  DigitalCatalog3DScreen, 
+  Print3DOrderScreen, 
+  PrintQueueDetailScreen 
+} from './screens/Print3DScreens';
+
+import { INITIAL_USER, IVECO_UNITS, PARTS_CATALOG, TRUCK_INSPECTION_MOCK, PRINT_3D_CATALOG } from './data/mockData';
 import { getUnits, getUserProfile, getParts, getTruckInspection } from './services/supabaseService';
 import { supabase, isSupabaseConfigured } from './lib/supabase';
 import { useEffect } from 'react';
@@ -77,6 +85,7 @@ export default function App() {
   const [user, setUser] = useState(INITIAL_USER);
   const [selectedUnit, setSelectedUnit] = useState(IVECO_UNITS[0]);
   const [selectedPart, setSelectedPart] = useState(PARTS_CATALOG[0]);
+  const [selected3DPart, setSelected3DPart] = useState(PRINT_3D_CATALOG[0]);
   const [selectedComponent, setSelectedComponent] = useState(TRUCK_INSPECTION_MOCK.components[2]);
   const [selectedExchange, setSelectedExchange] = useState(null);
 
@@ -363,6 +372,16 @@ export default function App() {
         return <DisposalTrackingScreen onNavigate={setCurrentScreen} />;
       case 'certificado_destinacao':
         return <DestinationCertificateScreen onNavigate={setCurrentScreen} />;
+
+      // 3D Printing & Reconditioning
+      case 'hub_3d':
+        return <Hub3DHomeScreen onNavigate={setCurrentScreen} onSelect3DPart={setSelected3DPart} />;
+      case 'catalogo_3d':
+        return <DigitalCatalog3DScreen onNavigate={setCurrentScreen} onSelect3DPart={setSelected3DPart} />;
+      case 'ordem_impressao_3d':
+        return <Print3DOrderScreen onNavigate={setCurrentScreen} selected3DPart={selected3DPart} />;
+      case 'rastreamento_impressao':
+        return <PrintQueueDetailScreen onNavigate={setCurrentScreen} />;
 
       // Profile & Unit
       case 'perfil':

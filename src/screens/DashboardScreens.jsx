@@ -17,7 +17,9 @@ import {
   Filter,
   Check,
   AlertTriangle,
-  FileText
+  FileText,
+  Printer,
+  Feather
 } from 'lucide-react';
 import { 
   NOTIFICATIONS, 
@@ -53,26 +55,37 @@ export const DashboardScreen = ({ user, unit, onNavigate }) => {
 
   return (
     <div className="h-full flex flex-col bg-[#0a0e14] overflow-y-auto pb-6">
-      {/* Top Bar */}
+      {/* Top Bar com Selo de Descarbonização */}
       <div className="px-5 pt-4 pb-2 flex items-center justify-between sticky top-0 bg-[#0a0e14]/90 backdrop-blur-md z-10">
         <div>
           <h1 className="text-xl font-extrabold text-white">Início</h1>
-          <div className="flex items-center gap-1.5 mt-0.5">
+          <div className="flex items-center gap-2 mt-0.5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#00e676] animate-pulse" />
-            <span className="text-[10px] font-semibold text-[#00e676]">Supabase Online</span>
+            <span className="text-[10px] font-semibold text-[#00e676]">Oficina Verde Nível Ouro</span>
+            <span className="text-[10px] text-gray-500">•</span>
+            <span className="text-[10px] font-bold text-[#38bdf8]">Hub 3D Ativo</span>
           </div>
         </div>
-        <button
-          onClick={() => onNavigate('notificacoes')}
-          className="relative p-2 rounded-xl bg-[#141b24] border border-white/10 text-gray-300 hover:text-white hover:border-[#00e676]/40 transition-all"
-        >
-          <Bell className="w-5 h-5" />
-          {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#00e676] text-black text-[10px] font-extrabold flex items-center justify-center">
-              {unreadCount}
-            </span>
-          )}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => onNavigate('hub_3d')}
+            className="p-2 rounded-xl bg-[#141b24] border border-[#00e676]/30 text-[#00e676] hover:bg-[#00e676]/10 transition-all"
+            title="Acessar Célula de Manufatura Aditiva 3D"
+          >
+            <Printer className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => onNavigate('notificacoes')}
+            className="relative p-2 rounded-xl bg-[#141b24] border border-white/10 text-gray-300 hover:text-white hover:border-[#00e676]/40 transition-all"
+          >
+            <Bell className="w-5 h-5" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#00e676] text-black text-[10px] font-extrabold flex items-center justify-center">
+                {unreadCount}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Greeting Header */}
@@ -118,6 +131,34 @@ export const DashboardScreen = ({ user, unit, onNavigate }) => {
             </div>
           </div>
           <ChevronRight className="w-4 h-4 text-[#00e676] group-hover:translate-x-0.5 transition-transform" />
+        </button>
+      </div>
+
+      {/* 3D Lightweighting / Ecoficina Banner */}
+      <div className="px-5 mt-2.5">
+        <button
+          onClick={() => onNavigate('hub_3d')}
+          className="w-full p-3.5 rounded-xl bg-gradient-to-r from-[#12241a] via-[#101e16] to-[#0c141d] border border-[#00e676]/40 hover:border-[#00e676] flex items-center justify-between text-left transition-all group shadow-md shadow-[#00e676]/5"
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-[#00e676]/20 text-[#00e676] flex items-center justify-center">
+              <Printer className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-extrabold text-[#00e676] uppercase tracking-wider">
+                  Ecoficina 3D & Polímeros
+                </span>
+                <span className="text-[9px] bg-[#38bdf8]/20 text-[#38bdf8] font-bold px-1.5 py-0.5 rounded">
+                  -164 kg Aliviados
+                </span>
+              </div>
+              <p className="text-xs font-semibold text-gray-200 group-hover:text-white">
+                Recondicionamento aditivo com PA12-CF / Fibra de Carbono
+              </p>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-[#00e676] group-hover:translate-x-0.5 transition-transform shrink-0" />
         </button>
       </div>
 
@@ -527,6 +568,54 @@ export const EnvironmentalImpactScreen = ({ onNavigate }) => {
           <div className="text-xl font-bold text-[#00e676] mt-1">{metrics.circularityRatePercent}%</div>
           <span className="text-[10px] text-[#00e676]">Meta 2026 superada</span>
         </div>
+      </div>
+
+      {/* 3D Lightweighting Impact Card */}
+      <div className="p-4 rounded-2xl bg-gradient-to-br from-[#13231c] via-[#0f1a17] to-[#0c141d] border border-[#00e676]/40 mb-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-[#00e676]/20 text-[#00e676] flex items-center justify-center">
+              <Printer className="w-4 h-4" />
+            </div>
+            <div>
+              <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                Descarbonização por Manufatura 3D
+              </h4>
+              <span className="text-[10px] text-gray-400">Polímeros Reforçados c/ Fibra de Carbono (PA12-CF)</span>
+            </div>
+          </div>
+          <button
+            onClick={() => onNavigate('hub_3d')}
+            className="px-2.5 py-1 rounded-lg bg-[#00e676]/10 text-[#00e676] border border-[#00e676]/30 text-[10px] font-bold hover:bg-[#00e676]/20 transition-all"
+          >
+            Abrir Hub 3D
+          </button>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2 pt-2 border-t border-white/10 text-center">
+          <div className="p-2 rounded-xl bg-black/20">
+            <span className="text-[10px] text-gray-400 block">Peças 3D</span>
+            <span className="text-sm font-extrabold text-[#00e676]">
+              {metrics.printed3DParts || 38} un.
+            </span>
+          </div>
+          <div className="p-2 rounded-xl bg-black/20">
+            <span className="text-[10px] text-gray-400 block">Peso Aliviado</span>
+            <span className="text-sm font-extrabold text-[#38bdf8]">
+              -{metrics.lightweightWeightSavedKg || 164} kg
+            </span>
+          </div>
+          <div className="p-2 rounded-xl bg-black/20">
+            <span className="text-[10px] text-gray-400 block">Diesel Poupado</span>
+            <span className="text-sm font-extrabold text-[#00e676]">
+              {metrics.co2RoadSavingsKg || 640} kg CO₂
+            </span>
+          </div>
+        </div>
+
+        <p className="text-[11px] text-gray-300 leading-relaxed">
+          💡 <strong>Regra de Eficiência:</strong> A substituição de suportes metálicos pesados por compósitos poliméricos ultraleves reduz o consumo em ~0,35L de diesel a cada 100 km rodados por caminhão pesado.
+        </p>
       </div>
 
       {/* Interactive Monthly Evolution Chart */}

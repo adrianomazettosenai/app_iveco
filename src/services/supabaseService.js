@@ -12,7 +12,9 @@ import {
   HISTORY_ITEMS, 
   AI_SUGGESTIONS, 
   CIRCULAR_ECONOMY_METRICS,
-  TRUCK_INSPECTION_MOCK
+  TRUCK_INSPECTION_MOCK,
+  PRINT_3D_CATALOG,
+  HUB_3D_PRINTERS
 } from '../data/mockData';
 
 /**
@@ -92,7 +94,7 @@ export async function signOutUser() {
 // ==============================================================================
 // 2. PERFIL DO USUÁRIO
 // ==============================================================================
-export async function getUserProfile(email = 'adriano.ribeiro@iveco.com') {
+export async function getUserProfile(email = 'gaspar.junior@iveco.com') {
   if (!isSupabaseConfigured || !supabase) return INITIAL_USER;
   try {
     const { data, error } = await supabase
@@ -677,4 +679,26 @@ export async function getTruckInspection(unitId = 'sp') {
     console.warn('Erro ao consultar truck_inspections no Supabase:', err);
     return TRUCK_INSPECTION_MOCK;
   }
+}
+
+// ==============================================================================
+// 9. MANUFATURA ADITIVA 3D & POLÍMEROS REFORÇADOS
+// ==============================================================================
+export async function get3DCatalog() {
+  return PRINT_3D_CATALOG;
+}
+
+export async function get3DPrinters() {
+  return HUB_3D_PRINTERS;
+}
+
+export async function send3DPrintOrder(orderData) {
+  console.log('Ordem de impressão 3D enviada com sucesso:', orderData);
+  return {
+    success: true,
+    orderId: 'ORD-3D-' + Math.floor(100000 + Math.random() * 900000),
+    status: 'enviado_para_impressora',
+    estimatedCompletion: '4h 30min',
+    timestamp: new Date().toISOString()
+  };
 }
